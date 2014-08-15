@@ -1,0 +1,4 @@
+en:
+  PostCodeLocationField:
+    VALIDATIONJS: 'Please enter an accurate ZIP and City/Country.'
+    VALIDATIONUNIQUEJS: 'ZIP and City/Country not unique, please specify.'

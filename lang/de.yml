@@ -1,0 +1,4 @@
+de:
+  PostCodeLocationField:
+    VALIDATIONJS: 'Bitte füllen Sie die Postleitzahl sowie Stadt/Land aus!'
+    VALIDATIONUNIQUEJS: 'Postleitzahl und Stadt/Land sind nicht eindeutig.'
