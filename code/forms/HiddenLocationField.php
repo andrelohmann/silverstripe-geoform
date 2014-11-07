@@ -5,7 +5,7 @@
  * @package geoform
  * @subpackage fields-formattedinput
  */
-class HiddenLocationField extends FormField {
+class HiddenLocationField extends HiddenField {
 	
 	/**
 	 * @var string $_locale
