@@ -354,7 +354,7 @@ JS;
                 $result = json_decode(file_get_contents($googleUrl), true);
                 
                 // if result unique
-                if($result['status'] == 'ok' && count($result['results']) == 1){
+                if($result['status'] == 'OK' && count($result['results']) == 1){
                     $latitudeField->setValue($result['results'][0]['geometry']['location']['lat']);
                     $longditudeField->setValue($result['results'][0]['geometry']['location']['lng']);
                     return true;
