@@ -1,4 +1,4 @@
 <?php
 
 // localhost
-GoogleMaps::$mapkey = "ABQIAAAAbnvDoAoYOSW2iqoXiGTpYBTIx7cuHpcaq3fYV4NM0BaZl8OxDxS9pQpgJkMv0RxjVl6cDGhDNERjaQ";
+//GoogleMaps::setApiKey(GOOGLE_MAPS_API_KEY);

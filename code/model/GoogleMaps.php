@@ -6,7 +6,15 @@
  */
 class GoogleMaps {
     /**
-     * @var string $mapkey
+     * @var string $API_KEY
      */
-    static public $mapkey = null;
+    static protected $API_KEY = null;
+    
+    public static function setApiKey($key){
+        self::$API_KEY = $key;
+    }
+    
+    public static function getApiKey(){
+        return self::$API_KEY;
+    }
 }

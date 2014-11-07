@@ -63,13 +63,13 @@ class PostCodeLocationField extends FormField {
 	
 	public function Field($properties = array()) {
 		Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
-		Requirements::javascript('http://maps.google.com/maps/api/js?sensor=true');
+                
+                if(GoogleMaps::getApiKey()) Requirements::javascript('https://maps.googleapis.com/maps/api/js?sensor=false&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
+                else  Requirements::javascript('https://maps.googleapis.com/maps/api/js?sensor=false');
 		
 		$name = $this->getName();
                 $postcode = _t('GeoForm.FIELDLABELPOSTCODE', 'ZIP/Postcode');
                 $country = _t('GeoForm.FIELDLABELCOUNTRY', 'City/Country');
-		
-		$mapkey = GoogleMaps::$mapkey;
 		
 		// set caption if required
 		$js = <<<JS
@@ -337,13 +337,22 @@ JS;
                     $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
                     return false;
 		}
+                
+		if(trim($postcodeField->Value()) == '' || trim($countryField->Value()) == ''){
+                    $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
+                    return false;
+		}
 
                 // fetch result from google (serverside)
                 $myPostcode = (stristr(trim(_t('GeoForm.FIELDLABELPOSTCODE', 'ZIP/Postcode')), trim($postcodeField->Value()))) ? '' : trim($postcodeField->Value());
                 $myCountry = (stristr(trim(_t('GeoForm.FIELDLABELCOUNTRY', 'City/Country')), trim($countryField->Value()))) ? '' : trim($countryField->Value());
                 
-                $googleUrl = 'http://maps.google.com/maps/api/geocode/json?address='.urlencode($myPostcode.', '.$myCountry).'&sensor=false';
+                // Update to v3 API
+                $googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($myPostcode.', '.$myCountry).'&language='.i18n::get_tinymce_lang();
+                if(GoogleMaps::getApiKey()) $googleUrl.= '&key='.GoogleMaps::getApiKey();
+                
                 $result = json_decode(file_get_contents($googleUrl), true);
+                
                 // if result unique
                 if($result['status'] == 'ok' && count($result['results']) == 1){
                     $latitudeField->setValue($result['results'][0]['geometry']['location']['lat']);
