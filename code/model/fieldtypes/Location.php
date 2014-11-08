@@ -31,7 +31,7 @@ class Location extends DBField implements CompositeDBField {
 	/**
 	 * @param array
 	 */
-	private static $composite_db = array(
+	static $composite_db = array(
 		"Latitude" => 'Double',
 		"Longditude" => 'Double'
 	);

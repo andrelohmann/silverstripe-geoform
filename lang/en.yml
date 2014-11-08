@@ -1,4 +1,10 @@
 en:
   PostCodeLocationField:
     VALIDATIONJS: 'Please enter an accurate ZIP and City/Country.'
-    VALIDATIONUNIQUEJS: 'ZIP and City/Country not unique, please specify.'
+    VALIDATIONUNIQUEJS: 'ZIP and City/Country are not unique, please specify.'
+    ZIPCODEPLACEHOLDER: 'ZIP/Postcode'
+    CITYCOUNTRYPLACEHOLDER: 'City/Country'
+  GeoLocationField:
+    ADDRESSPLACEHOLDER: 'Address'
+    VALIDATION: 'Please enter an accurate address!'
+    VALIDATIONUNIQUE: 'The address is not unique, please specify.'

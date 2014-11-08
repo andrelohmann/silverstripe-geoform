@@ -2,3 +2,9 @@ de:
   PostCodeLocationField:
     VALIDATIONJS: 'Bitte füllen Sie die Postleitzahl sowie Stadt/Land aus!'
     VALIDATIONUNIQUEJS: 'Postleitzahl und Stadt/Land sind nicht eindeutig.'
+    ZIPCODEPLACEHOLDER: 'PLZ'
+    CITYCOUNTRYPLACEHOLDER: 'Stadt / Land'
+  GeoLocationField:
+    ADDRESSPLACEHOLDER: 'Adresse'
+    VALIDATION: 'Bitte füllen Sie die Adresse aus!'
+    VALIDATIONUNIQUE: 'Die Adresse ist nicht eindeutig.'

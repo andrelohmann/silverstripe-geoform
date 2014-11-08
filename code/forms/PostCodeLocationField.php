@@ -64,12 +64,12 @@ class PostCodeLocationField extends FormField {
 	public function Field($properties = array()) {
 		Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
                 
-                if(GoogleMaps::getApiKey()) Requirements::javascript('https://maps.googleapis.com/maps/api/js?sensor=false&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
-                else  Requirements::javascript('https://maps.googleapis.com/maps/api/js?sensor=false');
-		
-		$name = $this->getName();
-                $postcode = _t('GeoForm.FIELDLABELPOSTCODE', 'ZIP/Postcode');
-                $country = _t('GeoForm.FIELDLABELCOUNTRY', 'City/Country');
+                if(GoogleMaps::getApiKey()) Requirements::javascript('https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
+                else  Requirements::javascript('https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
+                
+                $name = $this->getName();
+                $postcode = _t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode');
+                $country = _t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country');
 		
 		// set caption if required
 		$js = <<<JS
@@ -204,7 +204,7 @@ JS;
 		$field = new TextField(
 			"{$name}[Postcode]",
                         null,
-			_t('GeoForm.FIELDLABELPOSTCODE', 'ZIP/Postcode')
+			_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')
 		);
 		
 		return $field;
@@ -219,7 +219,7 @@ JS;
 		$field = new TextField(
 			"{$name}[Country]",
 			null,
-                        _t('GeoForm.FIELDLABELCOUNTRY', 'City/Country')
+                        _t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')
 		);
 		
 		return $field;
@@ -333,7 +333,7 @@ JS;
 		
 		// postcode and country are still placeholders
                 
-		if(stristr(trim(_t('GeoForm.FIELDLABELPOSTCODE', 'ZIP/Postcode')), trim($postcodeField->Value())) && stristr(trim(_t('GeoForm.FIELDLABELCOUNTRY', 'City/Country')), trim($countryField->Value()))){
+		if(stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value())) && stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))){
                     $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
                     return false;
 		}
@@ -344,8 +344,8 @@ JS;
 		}
 
                 // fetch result from google (serverside)
-                $myPostcode = (stristr(trim(_t('GeoForm.FIELDLABELPOSTCODE', 'ZIP/Postcode')), trim($postcodeField->Value()))) ? '' : trim($postcodeField->Value());
-                $myCountry = (stristr(trim(_t('GeoForm.FIELDLABELCOUNTRY', 'City/Country')), trim($countryField->Value()))) ? '' : trim($countryField->Value());
+                $myPostcode = (stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value()))) ? '' : trim($postcodeField->Value());
+                $myCountry = (stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))) ? '' : trim($countryField->Value());
                 
                 // Update to v3 API
                 $googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($myPostcode.', '.$myCountry).'&language='.i18n::get_tinymce_lang();
@@ -375,7 +375,7 @@ JS;
                         return true;
                     }else{
                         // result not unique
-                        $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONUNIQUEJS', 'ZIP and City/Country not unique, please be more specific.'), "validation");
+                        $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONUNIQUEJS', 'ZIP and City/Country are not unique, please specify.'), "validation");
                         return false;
                     }
                 }

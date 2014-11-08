@@ -41,7 +41,7 @@ class PostCodeLocation extends DBField implements CompositeDBField {
 	/**
 	 * @param array
 	 */
-	private static $composite_db = array(
+	static $composite_db = array(
 		"Postcode" => "Varchar(255)",
 		"Country" => "Varchar(255)",
 		"Latitude" => 'Double',
