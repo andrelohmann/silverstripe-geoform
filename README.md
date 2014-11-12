@@ -13,6 +13,7 @@ Set the Google Api Key inside geoform/_config.php
 
 Alter the Database and add the Following Functions:
 
+```
 delimiter //
 CREATE FUNCTION geodistance (lat1 DOUBLE, lng1 DOUBLE, lat2 DOUBLE, lng2 DOUBLE) RETURNS DOUBLE NO SQL
 BEGIN
@@ -34,6 +35,7 @@ RETURN distance;
 END;
 //
 delimiter ;
+```
 
 ### Notice
  * After each Update, set the new Tag
