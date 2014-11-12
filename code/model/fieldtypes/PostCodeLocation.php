@@ -270,7 +270,7 @@ class PostCodeLocation extends DBField implements CompositeDBField {
          */
         public function getSQLOrder(){
             // set Latitude and Longditude Columnnames
-            return 'geodistance('.$this->name.'Latitude,'.$this->name.'Latitude,'.$this->getLatitude().','.$this->getLongditude().')';
+            return 'geodistance('.$this->name.'Latitude,'.$this->name.'Longditude,'.$this->getLatitude().','.$this->getLongditude().')';
         }
         
         /**
