@@ -57,7 +57,15 @@ class GeoLocationField extends FormField {
     });
 })(jQuery);
 JS;
-        Requirements::customScript($js, 'GeoLocationField_Js');
+                Requirements::customScript($js, 'GeoLocationField_Js');
+        
+                $css = <<<CSS
+/* make the location suggest dropdown appear above dialog */
+.pac-container {
+    z-index: 2000 !important;
+}
+CSS;
+                Requirements::customCSS($css, 'GeoLocationField_Css');
 		
 	
 		return "<div class=\"fieldgroup\">" .
