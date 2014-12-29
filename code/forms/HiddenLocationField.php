@@ -22,6 +22,11 @@ class HiddenLocationField extends HiddenField {
 	 */
 	protected $fieldLongditude = null;
 	
+	/**
+	 * @var FormField
+	 */
+	protected $isRequired = false;
+	
 	public function __construct($name, $title = null, $value = "", $form = null) {
             
 		// naming with underscores to prevent values from actually being saved somewhere
@@ -30,6 +35,22 @@ class HiddenLocationField extends HiddenField {
 		
 		parent::__construct($name, $title, null, $form);
 		$this->setValue($value);
+	}
+
+	/**
+	 * Returns a "field holder" for this field - used by templates.
+	 * 
+	 * Forms are constructed by concatenating a number of these field holders.
+	 * The default field holder is a label and a form field inside a div.
+	 * @see FieldHolder.ss
+	 * 
+	 * @param array $properties key value pairs of template variables
+	 * @return string
+	 */
+	public function FieldHolder($properties = array()) {
+		$obj = ($properties) ? $this->customise($properties) : $this;
+
+		return $obj->renderWith($this->getFieldHolderTemplates());
 	}
 	
 	public function Field($properties = array()) {
@@ -104,6 +125,16 @@ JS;
 		return $this->_locale;
 	}
 	
+	public function setIsRequired($required = true) {
+		$this->isRequired = (bool)$required;
+
+		return $this;
+	}
+        
+	public function getIsRequired(){
+            return $this->isRequired;
+	}
+	
 	/**
 	 * Validates PostCodeLocation against GoogleMaps Serverside
 	 * 
@@ -120,6 +151,11 @@ JS;
                 // Result was unique
                 if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
                     return true;
+                }
+                
+                if($this->isRequired){
+                    $validator->validationError($name, _t('HiddenLocationField.LOCATIONREQUIRED', 'Please allow access to your location'), "validation");
+                    return false;
                 }
 	}
 }

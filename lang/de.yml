@@ -8,3 +8,5 @@ de:
     ADDRESSPLACEHOLDER: 'Adresse'
     VALIDATION: 'Bitte füllen Sie die Adresse aus!'
     VALIDATIONUNIQUE: 'Die Adresse ist nicht eindeutig.'
+  HiddenLocationField:
+    LOCATIONREQUIRED: 'Bitte erlaube den Zugriff auf Deinen Standort!'
