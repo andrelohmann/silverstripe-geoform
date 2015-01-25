@@ -35,6 +35,28 @@ class GeoLocationField extends FormField {
 		
 		parent::__construct($name, $title, $value, $form);
 	}
+
+	/**
+	 * Override addExtraClass
+	 * 
+	 * @param string $class
+	 */
+	public function addExtraClass($class) {
+		$this->fieldAddress->addExtraClass($class);
+                
+		return $this;
+	}
+
+	/**
+	 * Override removeExtraClass
+	 * 
+	 * @param string $class
+	 */
+	public function removeExtraClass($class) {
+		$this->fieldAddress->removeExtraClass($class);
+		
+		return $this;
+	}
 	
 	/**
 	 * @return string
@@ -57,7 +79,7 @@ class GeoLocationField extends FormField {
     });
 })(jQuery);
 JS;
-                Requirements::customScript($js, 'GeoLocationField_Js');
+                Requirements::customScript($js, 'GeoLocationField_Js_'.$this->ID());
         
                 $css = <<<CSS
 /* make the location suggest dropdown appear above dialog */
@@ -65,7 +87,7 @@ JS;
     z-index: 2000 !important;
 }
 CSS;
-                Requirements::customCSS($css, 'GeoLocationField_Css');
+                Requirements::customCSS($css, 'GeoLocationField_Css_'.$this->ID());
 		
 	
 		return "<div class=\"fieldgroup\">" .

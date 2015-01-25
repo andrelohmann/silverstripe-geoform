@@ -45,6 +45,30 @@ class PostCodeLocationField extends FormField {
 		parent::__construct($name, $title, null, $form);
 		$this->setValue($value);
 	}
+
+	/**
+	 * Override addExtraClass
+	 * 
+	 * @param string $class
+	 */
+	public function addExtraClass($class) {
+		$this->fieldPostcode->addExtraClass($class);
+		$this->fieldCountry->addExtraClass($class);
+                
+		return $this;
+	}
+
+	/**
+	 * Override removeExtraClass
+	 * 
+	 * @param string $class
+	 */
+	public function removeExtraClass($class) {
+		$this->fieldPostcode->removeExtraClass($class);
+		$this->fieldCountry->removeExtraClass($class);
+		
+		return $this;
+	}
         
         public function setPostcodeAttribute($name, $value){
             $this->fieldPostcode->setAttribute($name, $value);
@@ -174,7 +198,7 @@ function PostcodeIsSingleLocality(Response){
     return (counter == 1) ? locality : null;
 }
 JS;
-		Requirements::customScript($js);
+		Requirements::customScript($js, 'PostCodeLocationField_Js_'.$this->ID());
                 
                 if($this->wrapFieldgroup){
                     $field = "<div class=\"fieldgroup\">" .

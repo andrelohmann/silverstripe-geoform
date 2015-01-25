@@ -74,7 +74,7 @@ class HiddenLocationField extends HiddenField {
 }(window.jQuery);
 JS;
                     
-            Requirements::customScript($js);
+            Requirements::customScript($js, 'HiddenLocationField_Js_'.$this->ID());
             
             $field = $this->fieldLatitude->Field() . //SmallFieldHolder() .
             $this->fieldLongditude->Field(); //SmallFieldHolder()

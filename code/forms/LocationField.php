@@ -33,6 +33,30 @@ class LocationField extends FormField {
 		parent::__construct($name, $title, null, $form);
 		$this->setValue($value);
 	}
+
+	/**
+	 * Override addExtraClass
+	 * 
+	 * @param string $class
+	 */
+	public function addExtraClass($class) {
+		$this->fieldLatitude->addExtraClass($class);
+		$this->fieldLongditude->addExtraClass($class);
+                
+		return $this;
+	}
+
+	/**
+	 * Override removeExtraClass
+	 * 
+	 * @param string $class
+	 */
+	public function removeExtraClass($class) {
+		$this->fieldLatitude->removeExtraClass($class);
+		$this->fieldLongditude->removeExtraClass($class);
+		
+		return $this;
+	}
         
         public function setWrapFieldgroup($bool = true){
             $this->wrapFieldgroup = $bool;
