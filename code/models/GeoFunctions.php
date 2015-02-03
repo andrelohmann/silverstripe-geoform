@@ -135,17 +135,17 @@ class GeoFunctions {
     public static function getSQLSquare($geo_lat, $geo_lng, $radius, $scale = 'km'){
         $square = self::getSquare($geo_lat, $geo_lng, $radius, $scale);
         if($square['UpperLeft']['Longditude'] < $square['LowerRight']['Longditude']){
-            return '\''.$square['LowerRight']['Latitude'].'\'<'.self::$Latitude.' AND '.self::$Latitude.'<\''.$square['UpperLeft']['Latitude'].'\' AND \''.$square['UpperLeft']['Longditude'].'\'<'.self::$Longditude.' AND '.self::$Longditude.'<\''.$square['LowerRight']['Longditude'].'\'';
+            return '\''.$square['LowerRight']['Latitude'].'\' < '.self::$Latitude.' AND '.self::$Latitude.' < \''.$square['UpperLeft']['Latitude'].'\' AND \''.$square['UpperLeft']['Longditude'].'\' < '.self::$Longditude.' AND '.self::$Longditude.' < \''.$square['LowerRight']['Longditude'].'\'';
         }else{
-            return '\''.$square['LowerRight']['Latitude'].'\'<'.self::$Latitude.' AND '.self::$Latitude.'<\''.$square['UpperLeft']['Latitude'].'\' AND (\''.$square['UpperLeft']['Longditude'].'\'<'.self::$Longditude.' OR '.self::$Longditude.'<\''.$square['LowerRight']['Longditude'].'\')';
+            return '\''.$square['LowerRight']['Latitude'].'\' < '.self::$Latitude.' AND '.self::$Latitude.' < \''.$square['UpperLeft']['Latitude'].'\' AND (\''.$square['UpperLeft']['Longditude'].'\' < '.self::$Longditude.' OR '.self::$Longditude.' < \''.$square['LowerRight']['Longditude'].'\')';
         }
     }
     
     public static function getSQLSquareByBox($square = array('UpperLeft' => array('Latitude' => false, 'Longditude' => false), 'LowerRight' => array('Latitude' => false, 'Longditude' => false))){
         if($square['UpperLeft']['Longditude'] < $square['LowerRight']['Longditude']){
-            return '\''.$square['LowerRight']['Latitude'].'\'<'.self::$Latitude.' AND '.self::$Latitude.'<\''.$square['UpperLeft']['Latitude'].'\' AND \''.$square['UpperLeft']['Longditude'].'\'<'.self::$Longditude.' AND '.self::$Longditude.'<\''.$square['LowerRight']['Longditude'].'\'';
+            return '\''.$square['LowerRight']['Latitude'].'\' < '.self::$Latitude.' AND '.self::$Latitude.' < \''.$square['UpperLeft']['Latitude'].'\' AND \''.$square['UpperLeft']['Longditude'].'\' < '.self::$Longditude.' AND '.self::$Longditude.' < \''.$square['LowerRight']['Longditude'].'\'';
         }else{
-            return '\''.$square['LowerRight']['Latitude'].'\'<'.self::$Latitude.' AND '.self::$Latitude.'<\''.$square['UpperLeft']['Latitude'].'\' AND (\''.$square['UpperLeft']['Longditude'].'\'<'.self::$Longditude.' OR '.self::$Longditude.'<\''.$square['LowerRight']['Longditude'].'\')';
+            return '\''.$square['LowerRight']['Latitude'].'\' < '.self::$Latitude.' AND '.self::$Latitude.' < \''.$square['UpperLeft']['Latitude'].'\' AND (\''.$square['UpperLeft']['Longditude'].'\' < '.self::$Longditude.' OR '.self::$Longditude.' < \''.$square['LowerRight']['Longditude'].'\')';
         }
     }
     

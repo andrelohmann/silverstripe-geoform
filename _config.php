@@ -1,4 +1,3 @@
 <?php
 
-// localhost
-//GoogleMaps::setApiKey(GOOGLE_MAPS_API_KEY);
+if(defined('GOOGLE_MAPS_API_KEY')) GoogleMaps::setApiKey(GOOGLE_MAPS_API_KEY);
