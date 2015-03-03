@@ -14,6 +14,7 @@ Set the Google Api Key inside geoform/_config.php
 Alter the Database and add the Following Functions:
 
 ```
+DROP FUNCTION IF EXISTS geodistance;
 delimiter //
 CREATE FUNCTION geodistance (lat1 DOUBLE, lng1 DOUBLE, lat2 DOUBLE, lng2 DOUBLE) RETURNS DOUBLE NO SQL
 BEGIN
