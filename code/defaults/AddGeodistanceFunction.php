@@ -9,11 +9,12 @@ class AddGeodistanceFunction extends DataExtension{
     public function requireDefaultRecords() {
         parent::requireDefaultRecords();
         
-	if(!defined('CreateGeodistanceOnce')){
-            define('CreateGeodistanceOnce', true);
-            
-            $q1 = "DROP FUNCTION IF EXISTS geodistance;";
-            $q2 = "
+        if(defined('GEOFORM_CREATE_GEODISTANCE_UDF') && GEOFORM_CREATE_GEODISTANCE_UDF){
+            if(!defined('CreateGeodistanceOnce')){
+                define('CreateGeodistanceOnce', true);
+
+                $q1 = "DROP FUNCTION IF EXISTS geodistance;";
+                $q2 = "
 CREATE FUNCTION `geodistance`(lat1 DOUBLE, lng1 DOUBLE, lat2 DOUBLE, lng2 DOUBLE) RETURNS double
     NO SQL
 BEGIN
@@ -34,11 +35,11 @@ SET distance = radius * (2.0 * ASIN(CASE WHEN 1.0 < vara THEN 1.0 ELSE vara END)
 RETURN distance;
 END
 ";            
-            DB::query($q1);
-            DB::query($q2);
-            
-            DB::alteration_message('MySQL geodistance function created', 'created');
+                DB::query($q1);
+                DB::query($q2);
+
+                DB::alteration_message('MySQL geodistance function created', 'created');
+            }
         }
-        
     }
 }
