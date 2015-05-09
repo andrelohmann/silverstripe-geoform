@@ -6,6 +6,11 @@
  * @subpackage fields-formattedinput
  */
 class PostCodeLocationField extends FormField {
+    
+        /**
+         *  @var boolean $_requireJquery
+         */
+        protected $_requireJquery = false;
 	
 	/**
 	 * @var string $_locale
@@ -86,8 +91,8 @@ class PostCodeLocationField extends FormField {
         }
 	
 	public function Field($properties = array()) {
-		Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
-                
+                if($this->_requireJquery) Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
+            
                 if(GoogleMaps::getApiKey()) Requirements::javascript('https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
                 else  Requirements::javascript('https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
                 
@@ -403,5 +408,13 @@ JS;
                         return false;
                     }
                 }
+	}
+	
+	function setRequireJquery(boolean $require) {
+            $this->_requireJquery = $require;
+	}
+	
+	function getRequireJquery() {
+		return $this->_requireJquery;
 	}
 }

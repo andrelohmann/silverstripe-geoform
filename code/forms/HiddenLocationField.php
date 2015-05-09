@@ -6,6 +6,11 @@
  * @subpackage fields-formattedinput
  */
 class HiddenLocationField extends HiddenField {
+    
+        /**
+         *  @var boolean $_requireJquery
+         */
+        protected $_requireJquery = false;
 	
 	/**
 	 * @var string $_locale
@@ -54,8 +59,7 @@ class HiddenLocationField extends HiddenField {
 	}
 	
 	public function Field($properties = array()) {
-		
-            Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
+                if($this->_requireJquery) Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
             
             $name = $this->getName();
             
@@ -157,5 +161,13 @@ JS;
                     $validator->validationError($name, _t('HiddenLocationField.LOCATIONREQUIRED', 'Please allow access to your location'), "validation");
                     return false;
                 }
+	}
+	
+	function setRequireJquery(boolean $require) {
+            $this->_requireJquery = $require;
+	}
+	
+	function getRequireJquery() {
+		return $this->_requireJquery;
 	}
 }
