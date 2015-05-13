@@ -1,0 +1,4 @@
+/* make the location suggest dropdown appear above dialog */
+.pac-container {
+    z-index: 2000 !important;
+}

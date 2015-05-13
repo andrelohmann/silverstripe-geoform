@@ -5,7 +5,7 @@
  * @package geoform
  * @subpackage fields-formattedinput
  */
-class GeoLocationField extends FormField {
+class BackendGeoLocationField extends FormField {
 	
 	/**
 	 * @var string $_locale
@@ -32,7 +32,11 @@ class GeoLocationField extends FormField {
 		$this->fieldLatitude = new HiddenField("{$name}[Latitude]", null);
 		$this->fieldLongditude = new HiddenField("{$name}[Longditude]", null);
 		$this->fieldAddress = $this->FieldAddress($name);
-		
+
+                $this->fieldLatitude->addExtraClass('backend-geo-location-latitude-field');
+                $this->fieldLongditude->addExtraClass('backend-geo-location-longditude-field');
+                $this->fieldAddress->addExtraClass('backend-geo-location-address-field');
+                
 		parent::__construct($name, $title, $value, $form);
 	}
 
@@ -62,39 +66,24 @@ class GeoLocationField extends FormField {
 	 * @return string
 	 */
 	function Field($properties = array()) {
-                Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
-            
-                Requirements::javascript('geoform/javascript/jquery.geocomplete.js');
 		
-		if(GoogleMaps::getApiKey()) Requirements::javascript('https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
-                else  Requirements::javascript('https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
+                if(GoogleMaps::getApiKey()){
+                    Requirements::javascript('//maps.googleapis.com/maps/api/js?js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());
+                }else{
+                    Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
+                }
                 
-                $name = $this->name;
-                $js = <<<JS
-(function($){
-    $(function(){
-        $("#{$name}-Address").geocomplete().bind("geocode:result", function(event, result){
-            $("#{$name}-Latitude").val(result.geometry.location.lat());
-            $("#{$name}-Longditude").val(result.geometry.location.lng());
-        });
-    });
-})(jQuery);
-JS;
-                Requirements::customScript($js, 'GeoLocationField_Js_'.$this->ID());
-        
-                $css = <<<CSS
-/* make the location suggest dropdown appear above dialog */
-.pac-container {
-    z-index: 2000 !important;
-}
-CSS;
-                Requirements::customCSS($css, 'GeoLocationField_Css_'.$this->ID());
+                Requirements::javascript('geoform/javascript/backendgeolocationfield.js');
+                
+                Requirements::css('geoform/css/backendgeolocationfield.css');
 		
 	
 		return "<div class=\"fieldgroup\">" .
+                        "<div class=\"backend-geo-location-field\">" .
 			$this->fieldLatitude->Field() . //SmallFieldHolder() .
 			$this->fieldLongditude->Field() . //SmallFieldHolder() .
 			"<div class=\"fieldgroupField\">" . $this->fieldAddress->Field() . "</div>" . 
+                        "</div>" .
 		"</div>";
 	}
 	
@@ -210,21 +199,18 @@ CSS;
                 if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
                     return true;
                 }
-		
-		// postcode and country are still placeholders
-                
-		if(stristr(trim(_t('GeoLocationField.ADDRESSPLACEHOLDER', 'Address')), trim($addressField->Value()))){
-                    $validator->validationError($name, _t('GeoLocationField.VALIDATION', 'Please enter an accurate address!'), "validation");
-                    return false;
-		}
                 
 		if(trim($addressField->Value()) == ''){
-                    $validator->validationError($name, _t('GeoLocationField.VALIDATION', 'Please enter an accurate address!'), "validation");
-                    return false;
+                    if(!$validator->fieldIsRequired($this->name)){
+                        return true;
+                    } else {
+                        $validator->validationError($name, _t('GeoLocationField.VALIDATION', 'Please enter an accurate address!'), "validation");
+                        return false;
+                    }
 		}
 
                 // fetch result from google (serverside)
-                $myAddress = (stristr(trim(_t('GeoLocationField.ADDRESSPLACEHOLDER', 'Address')), trim($addressField->Value()))) ? '' : trim($addressField->Value());
+                $myAddress = trim($addressField->Value());
                 
                 // Update to v3 API
                 $googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($myAddress).'&language='.i18n::get_tinymce_lang();
@@ -258,5 +244,13 @@ CSS;
                         return false;
                     }
                 }
+	}
+	
+	function setRequireJquery(boolean $require) {
+            $this->_requireJquery = $require;
+	}
+	
+	function getRequireJquery() {
+		return $this->_requireJquery;
 	}
 }
