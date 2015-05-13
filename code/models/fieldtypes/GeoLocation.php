@@ -39,7 +39,7 @@ class GeoLocation extends Location implements CompositeDBField {
 		if($this->getAddress()) {
 			$manipulation['fields'][$this->name.'Address'] = $this->prepValueForDB($this->getAddress());
 		} else {
-			$manipulation['fields'][$this->name.'Address'] = DBField::create('Varchar', $this->getAddress())->nullValue();
+			$manipulation['fields'][$this->name.'Address'] = DBField::create_field('Varchar', $this->getAddress())->nullValue();
 		}
                 parent::writeToManipulation($manipulation);
 	}
