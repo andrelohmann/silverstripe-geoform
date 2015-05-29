@@ -207,10 +207,17 @@ class Location extends DBField implements CompositeDBField {
             return 'geodistance('.$this->name.'Latitude,'.$this->name.'Longditude,'.$this->getLatitude().','.$this->getLongditude().')';
         }
         
-        /**
-         * return the Distance to the given 
+         /**
+         * return the Distance to the given lat/lng
          */
         public function getDistance($lat, $lng, $scale = 'km'){
             return GeoFunctions::getDistance($this->getLatitude(), $this->getLongditude(), $lat, $long, $scale);
+        }
+        
+        /**
+         * return the Distance to the given location
+         */
+        public function getDistanceFromLocation(Location $location, $scale = 'km'){
+            return GeoFunctions::getDistance($this->getLatitude(), $this->getLongditude(), $location->getLatitude(), $location->getLongditude(), $scale);
         }
 }
