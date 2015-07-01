@@ -153,7 +153,8 @@ JS;
                 }
                 
                 if($this->isRequired){
-                    $validator->validationError($name, _t('HiddenLocationField.LOCATIONREQUIRED', 'Please allow access to your location'), "validation");
+                    //$validator->validationError($name, _t('HiddenLocationField.LOCATIONREQUIRED', 'Please allow access to your location'), "validation");
+					$this->form->sessionMessage(_t('HiddenLocationField.LOCATIONREQUIRED', 'Please allow access to your location'), 'bad');
                     return false;
                 }
 	}
