@@ -12,7 +12,7 @@ class LocationField extends FormField {
 	 */
 	protected $_locale;
         
-        protected $wrapFieldgroup = true;
+	protected $wrapFieldgroup = true;
 	
 	/**
 	 * @var FormField
@@ -58,28 +58,28 @@ class LocationField extends FormField {
 		return $this;
 	}
         
-        public function setWrapFieldgroup($bool = true){
-            $this->wrapFieldgroup = $bool;
-            return $this;
-        }
+	public function setWrapFieldgroup($bool = true){
+		$this->wrapFieldgroup = $bool;
+		return $this;
+	}
 	
 	public function Field($properties = array()) {
 		
-            $name = $this->getName();
+		$name = $this->getName();
                 
-                if($this->wrapFieldgroup){
-                    $field = "<div class=\"fieldgroup\">" .
-                             "<div class=\"fieldgroup-field\">" . 
-                             $this->fieldLatitude->Field() . //SmallFieldHolder() .
-                             $this->fieldLongditude->Field() . //SmallFieldHolder() .
-                             "</div>" .
-                             "</div>";
-                }else{
-                    $field = $this->fieldLatitude->Field() . //SmallFieldHolder() .
-                             $this->fieldLongditude->Field(); //SmallFieldHolder()
-                }
-                
-                return $field;
+		if($this->wrapFieldgroup){
+			$field = "<div class=\"fieldgroup\">" .
+					 "<div class=\"fieldgroup-field\">" . 
+					 $this->fieldLatitude->Field() . //SmallFieldHolder() .
+					 $this->fieldLongditude->Field() . //SmallFieldHolder() .
+					 "</div>" .
+					 "</div>";
+		}else{
+			$field = $this->fieldLatitude->Field() . //SmallFieldHolder() .
+					 $this->fieldLongditude->Field(); //SmallFieldHolder()
+		}
+
+		return $field;
 	}
 	
 	/**
@@ -197,9 +197,9 @@ class LocationField extends FormField {
 		$latitudeField->setValue($_POST[$name]['Latitude']);
 		$longditudeField->setValue($_POST[$name]['Longditude']);
                 
-                // Result was unique
-                if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
-                    return true;
-                }
+		// Result was unique
+		if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
+			return true;
+		}
 	}
 }

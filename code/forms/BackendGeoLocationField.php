@@ -33,9 +33,9 @@ class BackendGeoLocationField extends FormField {
 		$this->fieldLongditude = new HiddenField("{$name}[Longditude]", null);
 		$this->fieldAddress = $this->FieldAddress($name);
 
-                $this->fieldLatitude->addExtraClass('backend-geo-location-latitude-field');
-                $this->fieldLongditude->addExtraClass('backend-geo-location-longditude-field');
-                $this->fieldAddress->addExtraClass('backend-geo-location-address-field');
+		$this->fieldLatitude->addExtraClass('backend-geo-location-latitude-field');
+		$this->fieldLongditude->addExtraClass('backend-geo-location-longditude-field');
+		$this->fieldAddress->addExtraClass('backend-geo-location-address-field');
                 
 		parent::__construct($name, $title, $value, $form);
 	}
@@ -67,23 +67,23 @@ class BackendGeoLocationField extends FormField {
 	 */
 	function Field($properties = array()) {
 		
-                if(GoogleMaps::getApiKey()){
-                    Requirements::javascript('//maps.googleapis.com/maps/api/js?js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());
-                }else{
-                    Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
-                }
-                
-                Requirements::javascript('geoform/javascript/backendgeolocationfield.js');
-                
-                Requirements::css('geoform/css/backendgeolocationfield.css');
+		if(GoogleMaps::getApiKey()){
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());
+		}else{
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
+		}
+
+		Requirements::javascript('geoform/javascript/backendgeolocationfield.js');
+
+		Requirements::css('geoform/css/backendgeolocationfield.css');
 		
 	
 		return "<div class=\"fieldgroup\">" .
-                        "<div class=\"backend-geo-location-field\">" .
+			"<div class=\"backend-geo-location-field\">" .
 			$this->fieldLatitude->Field() . //SmallFieldHolder() .
 			$this->fieldLongditude->Field() . //SmallFieldHolder() .
 			"<div class=\"fieldgroupField\">" . $this->fieldAddress->Field() . "</div>" . 
-                        "</div>" .
+			"</div>" .
 		"</div>";
 	}
 	
@@ -195,59 +195,59 @@ class BackendGeoLocationField extends FormField {
 		$latitudeField->setValue($_POST[$name]['Latitude']);
 		$longditudeField->setValue($_POST[$name]['Longditude']);
                 
-                // Result was unique
-                if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
-                    return true;
-                }
+		// Result was unique
+		if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
+			return true;
+		}
                 
 		if(trim($addressField->Value()) == ''){
-                    if(!$validator->fieldIsRequired($this->name)){
-                        return true;
-                    } else {
-                        $validator->validationError($name, _t('GeoLocationField.VALIDATION', 'Please enter an accurate address!'), "validation");
-                        return false;
-                    }
+			if(!$validator->fieldIsRequired($this->name)){
+				return true;
+			} else {
+				$validator->validationError($name, _t('GeoLocationField.VALIDATION', 'Please enter an accurate address!'), "validation");
+				return false;
+			}
 		}
 
-                // fetch result from google (serverside)
-                $myAddress = trim($addressField->Value());
-                
-                // Update to v3 API
-                $googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($myAddress).'&language='.i18n::get_tinymce_lang();
-                if(GoogleMaps::getApiKey()) $googleUrl.= '&key='.GoogleMaps::getApiKey();
-                
-                $result = json_decode(file_get_contents($googleUrl), true);
-                
-                // if result unique
-                if($result['status'] == 'OK' && count($result['results']) == 1){
-                    $latitudeField->setValue($result['results'][0]['geometry']['location']['lat']);
-                    $longditudeField->setValue($result['results'][0]['geometry']['location']['lng']);
-                    return true;
-                }else{
-                    $tmpCounter = 0;
-                    $tmpLocality = null;
-                    for($i=0; $i<count($result['results']); $i++){
-                        // check if type is locality political
-                        if($result['results'][$i]['types'][0] == 'locality' && $result['results'][$i]['types'][1] == 'political'){
-                            $tmpLocality = $i;
-                            $tmpCounter++;
-                        }
-                    }
-                    
-                    if($tmpCounter == 1){
-                        $latitudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lat']);
-                        $longditudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lng']);
-                        return true;
-                    }else{
-                        // result not unique
-                        $validator->validationError($name, _t('GeoLocationField.VALIDATIONUNIQUE', 'The address is not unique, please specify.'), "validation");
-                        return false;
-                    }
-                }
+		// fetch result from google (serverside)
+		$myAddress = trim($addressField->Value());
+
+		// Update to v3 API
+		$googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($myAddress).'&language='.i18n::get_tinymce_lang();
+		if(GoogleMaps::getApiKey()) $googleUrl.= '&key='.GoogleMaps::getApiKey();
+
+		$result = json_decode(file_get_contents($googleUrl), true);
+
+		// if result unique
+		if($result['status'] == 'OK' && count($result['results']) == 1){
+			$latitudeField->setValue($result['results'][0]['geometry']['location']['lat']);
+			$longditudeField->setValue($result['results'][0]['geometry']['location']['lng']);
+			return true;
+		}else{
+			$tmpCounter = 0;
+			$tmpLocality = null;
+			for($i=0; $i<count($result['results']); $i++){
+				// check if type is locality political
+				if($result['results'][$i]['types'][0] == 'locality' && $result['results'][$i]['types'][1] == 'political'){
+					$tmpLocality = $i;
+					$tmpCounter++;
+				}
+			}
+
+			if($tmpCounter == 1){
+				$latitudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lat']);
+				$longditudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lng']);
+				return true;
+			}else{
+				// result not unique
+				$validator->validationError($name, _t('GeoLocationField.VALIDATIONUNIQUE', 'The address is not unique, please specify.'), "validation");
+				return false;
+			}
+		}
 	}
 	
 	function setRequireJquery(boolean $require) {
-            $this->_requireJquery = $require;
+		$this->_requireJquery = $require;
 	}
 	
 	function getRequireJquery() {

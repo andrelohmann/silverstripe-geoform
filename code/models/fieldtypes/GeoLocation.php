@@ -86,11 +86,11 @@ class GeoLocation extends Location implements CompositeDBField {
 	 * @return string
 	 */
 	public function Nice($size = 400) {
-            $size = $size.'x'.$size;
-            $loc = $this->latitude.",".$this->longditude;
-            $marker = 'color:blue%7C'.$loc;
-            $imageurl = "https://maps.googleapis.com/maps/api/staticmap?center=".$loc."&size=".$size."&language=".i18n::get_tinymce_lang()."&markers=".$marker."&maptype=roadmap&zoom=14&sensor=false";
-            return '<img src="'.$imageurl.'" />';
+		$size = $size.'x'.$size;
+		$loc = $this->latitude.",".$this->longditude;
+		$marker = 'color:blue%7C'.$loc;
+		$imageurl = "https://maps.googleapis.com/maps/api/staticmap?center=".$loc."&size=".$size."&language=".i18n::get_tinymce_lang()."&markers=".$marker."&maptype=roadmap&zoom=14&sensor=false";
+		return '<img src="'.$imageurl.'" />';
 	}
 
 	/**

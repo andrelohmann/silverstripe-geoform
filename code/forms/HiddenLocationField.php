@@ -25,6 +25,11 @@ class HiddenLocationField extends HiddenField {
 	/**
 	 * @var FormField
 	 */
+	protected $fieldPositionSet = null;
+	
+	/**
+	 * @var FormField
+	 */
 	protected $isRequired = false;
 	
 	public function __construct($name, $title = null, $value = "", $form = null) {
@@ -32,6 +37,8 @@ class HiddenLocationField extends HiddenField {
 		// naming with underscores to prevent values from actually being saved somewhere
 		$this->fieldLatitude = new HiddenField("{$name}[Latitude]", null);
 		$this->fieldLongditude = new HiddenField("{$name}[Longditude]", null);
+		$this->fieldPositionSet = new HiddenField("{$name}[PositionSet]", null);
+		$this->fieldPositionSet->setValue(0);
 		
 		parent::__construct($name, $title, null, $form);
 		$this->setValue($value);
@@ -54,12 +61,12 @@ class HiddenLocationField extends HiddenField {
 	}
 	
 	public function Field($properties = array()) {
-                Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
+		Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
             
-            $name = $this->getName();
-            
-            // set caption if required
-            $js = <<<JS
+		$name = $this->getName();
+
+		// set caption if required
+		$js = <<<JS
 !function($){
     $(function(){
         // Try HTML5 geolocation
@@ -67,18 +74,22 @@ class HiddenLocationField extends HiddenField {
             navigator.geolocation.getCurrentPosition(function(position){
                     jQuery('#{$name}-Latitude').val(position.coords.latitude);
                     jQuery('#{$name}-Longditude').val(position.coords.longitude);
+					jQuery('#{$name}-PositionSet').val(1);
             });
         }
     });
 }(window.jQuery);
 JS;
                     
-            Requirements::customScript($js, 'HiddenLocationField_Js_'.$this->ID());
-            
-            $field = $this->fieldLatitude->Field() . //SmallFieldHolder() .
-            $this->fieldLongditude->Field(); //SmallFieldHolder()
-            
-            return $field;
+		Requirements::customScript($js, 'HiddenLocationField_Js_'.$this->ID());
+		
+		
+
+		$field = $this->fieldLatitude->Field() . //SmallFieldHolder() .
+		$this->fieldLongditude->Field() . //SmallFieldHolder()
+		$this->fieldPositionSet->Field(); //SmallFieldHolder()
+
+		return $field;
 	}
 	
 	public function setValue($val) {
@@ -87,6 +98,7 @@ JS;
 		if(is_array($val)) {
 			$this->fieldLatitude->setValue($val['Latitude']);
 			$this->fieldLongditude->setValue($val['Longditude']);
+			$this->fieldPositionSet->setValue($val['PositionSet']);
 		} elseif($val instanceof Location) {
 			$this->fieldLatitude->setValue($val->getLatitude());
 			$this->fieldLongditude->setValue($val->getLongditude());
@@ -144,18 +156,22 @@ JS;
 		
 		$latitudeField = $this->fieldLatitude;
 		$longditudeField = $this->fieldLongditude;
+		$positionSetField = $this->fieldPositionSet;
 		$latitudeField->setValue($_POST[$name]['Latitude']);
 		$longditudeField->setValue($_POST[$name]['Longditude']);
-                
-                // Result was unique
-                if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
-                    return true;
-                }
-                
-                if($this->isRequired){
-                    //$validator->validationError($name, _t('HiddenLocationField.LOCATIONREQUIRED', 'Please allow access to your location'), "validation");
-					$this->form->sessionMessage(_t('HiddenLocationField.LOCATIONREQUIRED', 'Please allow access to your location'), 'bad');
-                    return false;
-                }
+		$positionSetField->setValue($_POST[$name]['PositionSet']);
+			        
+		// Result was unique
+		if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value()) && $positionSetField->Value() == 1){
+			return true;
+		}
+		
+
+		if($this->isRequired){
+			$validator->validationError($name, _t('HiddenLocationField.LOCATIONREQUIRED', 'Please allow access to your location'), "validation");
+			$this->form->sessionMessage(_t('HiddenLocationField.LOCATIONREQUIRED', 'Please allow access to your location'), 'bad');
+
+			return false;
+		}
 	}
 }

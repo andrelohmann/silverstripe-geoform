@@ -12,7 +12,7 @@ class PostCodeLocationField extends FormField {
 	 */
 	protected $_locale;
         
-        protected $wrapFieldgroup = true;
+	protected $wrapFieldgroup = true;
 	
 	/**
 	 * @var FormField
@@ -70,30 +70,30 @@ class PostCodeLocationField extends FormField {
 		return $this;
 	}
         
-        public function setPostcodeAttribute($name, $value){
-            $this->fieldPostcode->setAttribute($name, $value);
-            return $this;
-        }
-        
-        public function setCountryAttribute($name, $value){
-            $this->fieldCountry->setAttribute($name, $value);
-            return $this;
-        }
-        
-        public function setWrapFieldgroup($bool = true){
-            $this->wrapFieldgroup = $bool;
-            return $this;
-        }
+	public function setPostcodeAttribute($name, $value){
+		$this->fieldPostcode->setAttribute($name, $value);
+		return $this;
+	}
+
+	public function setCountryAttribute($name, $value){
+		$this->fieldCountry->setAttribute($name, $value);
+		return $this;
+	}
+
+	public function setWrapFieldgroup($bool = true){
+		$this->wrapFieldgroup = $bool;
+		return $this;
+	}
 	
 	public function Field($properties = array()) {
-                Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
-            
-                if(GoogleMaps::getApiKey()) Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
-                else  Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
-                
-                $name = $this->getName();
-                $postcode = _t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode');
-                $country = _t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country');
+		Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
+
+		if(GoogleMaps::getApiKey()) Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
+		else  Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
+
+		$name = $this->getName();
+		$postcode = _t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode');
+		$country = _t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country');
 		
 		// set caption if required
 		$js = <<<JS
@@ -200,23 +200,23 @@ function PostcodeIsSingleLocality(Response){
 JS;
 		Requirements::customScript($js, 'PostCodeLocationField_Js_'.$this->ID());
                 
-                if($this->wrapFieldgroup){
-                    $field = "<div class=\"fieldgroup\">" .
-                             $this->fieldLatitude->Field() . //SmallFieldHolder() .
-                             $this->fieldLongditude->Field() . //SmallFieldHolder() .
-                             "<div class=\"fieldgroup-field\">" . 
-                             $this->fieldPostcode->Field() . " " . $this->fieldCountry->Field() .
-                             "</div>" .
-                             "</div>";
-                }else{
-                    $field = $this->fieldLatitude->Field() . //SmallFieldHolder() .
-                             $this->fieldLongditude->Field() . //SmallFieldHolder() .
-                             $this->fieldPostcode->Field() .
-                             " " .
-                             $this->fieldCountry->Field();
-                }
-                
-                return $field;
+		if($this->wrapFieldgroup){
+			$field = "<div class=\"fieldgroup\">" .
+					 $this->fieldLatitude->Field() . //SmallFieldHolder() .
+					 $this->fieldLongditude->Field() . //SmallFieldHolder() .
+					 "<div class=\"fieldgroup-field\">" . 
+					 $this->fieldPostcode->Field() . " " . $this->fieldCountry->Field() .
+					 "</div>" .
+					 "</div>";
+		}else{
+			$field = $this->fieldLatitude->Field() . //SmallFieldHolder() .
+					 $this->fieldLongditude->Field() . //SmallFieldHolder() .
+					 $this->fieldPostcode->Field() .
+					 " " .
+					 $this->fieldCountry->Field();
+		}
+
+		return $field;
 	}
 	
 	/**
@@ -243,7 +243,7 @@ JS;
 		$field = new TextField(
 			"{$name}[Country]",
 			null,
-                        _t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')
+			_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')
 		);
 		
 		return $field;
@@ -350,58 +350,58 @@ JS;
 		$latitudeField->setValue($_POST[$name]['Latitude']);
 		$longditudeField->setValue($_POST[$name]['Longditude']);
                 
-                // Result was unique
-                if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
-                    return true;
-                }
+		// Result was unique
+		if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
+			return true;
+		}
 		
 		// postcode and country are still placeholders
                 
 		if(stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value())) && stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))){
-                    $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
-                    return false;
+			$validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
+			return false;
 		}
                 
 		if(trim($postcodeField->Value()) == '' || trim($countryField->Value()) == ''){
-                    $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
-                    return false;
+			$validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
+			return false;
 		}
 
-                // fetch result from google (serverside)
-                $myPostcode = (stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value()))) ? '' : trim($postcodeField->Value());
-                $myCountry = (stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))) ? '' : trim($countryField->Value());
-                
-                // Update to v3 API
-                $googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($myPostcode.', '.$myCountry).'&language='.i18n::get_tinymce_lang();
-                if(GoogleMaps::getApiKey()) $googleUrl.= '&key='.GoogleMaps::getApiKey();
-                
-                $result = json_decode(file_get_contents($googleUrl), true);
-                
-                // if result unique
-                if($result['status'] == 'OK' && count($result['results']) == 1){
-                    $latitudeField->setValue($result['results'][0]['geometry']['location']['lat']);
-                    $longditudeField->setValue($result['results'][0]['geometry']['location']['lng']);
-                    return true;
-                }else{
-                    $tmpCounter = 0;
-                    $tmpLocality = null;
-                    for($i=0; $i<count($result['results']); $i++){
-                        // check if type is locality political
-                        if($result['results'][$i]['types'][0] == 'locality' && $result['results'][$i]['types'][1] == 'political'){
-                            $tmpLocality = $i;
-                            $tmpCounter++;
-                        }
-                    }
-                    
-                    if($tmpCounter == 1){
-                        $latitudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lat']);
-                        $longditudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lng']);
-                        return true;
-                    }else{
-                        // result not unique
-                        $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONUNIQUEJS', 'ZIP and City/Country are not unique, please specify.'), "validation");
-                        return false;
-                    }
-                }
+		// fetch result from google (serverside)
+		$myPostcode = (stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value()))) ? '' : trim($postcodeField->Value());
+		$myCountry = (stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))) ? '' : trim($countryField->Value());
+
+		// Update to v3 API
+		$googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($myPostcode.', '.$myCountry).'&language='.i18n::get_tinymce_lang();
+		if(GoogleMaps::getApiKey()) $googleUrl.= '&key='.GoogleMaps::getApiKey();
+
+		$result = json_decode(file_get_contents($googleUrl), true);
+
+		// if result unique
+		if($result['status'] == 'OK' && count($result['results']) == 1){
+			$latitudeField->setValue($result['results'][0]['geometry']['location']['lat']);
+			$longditudeField->setValue($result['results'][0]['geometry']['location']['lng']);
+			return true;
+		}else{
+			$tmpCounter = 0;
+			$tmpLocality = null;
+			for($i=0; $i<count($result['results']); $i++){
+				// check if type is locality political
+				if($result['results'][$i]['types'][0] == 'locality' && $result['results'][$i]['types'][1] == 'political'){
+					$tmpLocality = $i;
+					$tmpCounter++;
+				}
+			}
+
+			if($tmpCounter == 1){
+				$latitudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lat']);
+				$longditudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lng']);
+				return true;
+			}else{
+				// result not unique
+				$validator->validationError($name, _t('PostCodeLocationField.VALIDATIONUNIQUEJS', 'ZIP and City/Country are not unique, please specify.'), "validation");
+				return false;
+			}
+		}
 	}
 }

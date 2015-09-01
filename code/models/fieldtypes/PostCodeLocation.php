@@ -139,11 +139,11 @@ class PostCodeLocation extends DBField implements CompositeDBField {
 	 * @return string
 	 */
 	public function Nice($size = 400) {
-            $size = $size.'x'.$size;
-            $loc = $this->latitude.",".$this->longditude;
-            $marker = 'color:blue%7C'.$loc;
-            $imageurl = "https://maps.googleapis.com/maps/api/staticmap?center=".$loc."&size=".$size."&language=".i18n::get_tinymce_lang()."&markers=".$marker."&maptype=roadmap&zoom=14&sensor=false";
-            return '<img src="'.$imageurl.'" />';
+		$size = $size.'x'.$size;
+		$loc = $this->latitude.",".$this->longditude;
+		$marker = 'color:blue%7C'.$loc;
+		$imageurl = "https://maps.googleapis.com/maps/api/staticmap?center=".$loc."&size=".$size."&language=".i18n::get_tinymce_lang()."&markers=".$marker."&maptype=roadmap&zoom=14&sensor=false";
+		return '<img src="'.$imageurl.'" />';
 	}
 
 	/**
@@ -254,29 +254,29 @@ class PostCodeLocation extends DBField implements CompositeDBField {
 		return (string)$this->getPostcode().', '.(string)$this->getCountry();
 	}
         
-        /**
-         * return a SQL Bounce for WHERE Clause
-         */
-        public function getSQLFilter($radius, $scale = 'km'){
-            // set Latitude and Longditude Columnnames
-            GeoFunctions::$Latitude = $this->name.'Latitude';
-            GeoFunctions::$Longditude = $this->name.'Longditude';
-            
-            return GeoFunctions::getSQLSquare($this->getLatitude(), $this->getLongditude(), $radius, $scale);
-        }
-        
-        /**
-         * return the Distance SQL String
-         */
-        public function getSQLOrder(){
-            // set Latitude and Longditude Columnnames
-            return 'geodistance('.$this->name.'Latitude,'.$this->name.'Longditude,'.$this->getLatitude().','.$this->getLongditude().')';
-        }
-        
-        /**
-         * return the Distance to the given 
-         */
-        public function getDistance($lat, $lng, $scale = 'km'){
-            return GeoFunctions::getDistance($this->getLatitude(), $this->getLongditude(), $lat, $long, $scale);
-        }
+	/**
+	 * return a SQL Bounce for WHERE Clause
+	 */
+	public function getSQLFilter($radius, $scale = 'km'){
+		// set Latitude and Longditude Columnnames
+		GeoFunctions::$Latitude = $this->name.'Latitude';
+		GeoFunctions::$Longditude = $this->name.'Longditude';
+
+		return GeoFunctions::getSQLSquare($this->getLatitude(), $this->getLongditude(), $radius, $scale);
+	}
+
+	/**
+	 * return the Distance SQL String
+	 */
+	public function getSQLOrder(){
+		// set Latitude and Longditude Columnnames
+		return 'geodistance('.$this->name.'Latitude,'.$this->name.'Longditude,'.$this->getLatitude().','.$this->getLongditude().')';
+	}
+
+	/**
+	 * return the Distance to the given 
+	 */
+	public function getDistance($lat, $lng, $scale = 'km'){
+		return GeoFunctions::getDistance($this->getLatitude(), $this->getLongditude(), $lat, $long, $scale);
+	}
 }
