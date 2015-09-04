@@ -72,9 +72,9 @@ class HiddenLocationField extends HiddenField {
         // Try HTML5 geolocation
         if(navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position){
-                    jQuery('#{$name}-Latitude').val(position.coords.latitude);
-                    jQuery('#{$name}-Longditude').val(position.coords.longitude);
-					jQuery('#{$name}-PositionSet').val(1);
+                    jQuery('#{$name}_Latitude').val(position.coords.latitude);
+                    jQuery('#{$name}_Longditude').val(position.coords.longitude);
+					jQuery('#{$name}_PositionSet').val(1);
             });
         }
     });
