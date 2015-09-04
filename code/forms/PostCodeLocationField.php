@@ -99,20 +99,20 @@ class PostCodeLocationField extends FormField {
 		$js = <<<JS
 jQuery(document).ready(function() {
     // bind PostCodeLocationChanged to Postcode and Country Fields
-    jQuery('#{$name}-Postcode').keyup({$name}PostCodeLocationChanged).focus({$name}PostCodeLocationEmptyPostcode);
-    jQuery('#{$name}-Country').keyup({$name}PostCodeLocationChanged).focus({$name}PostCodeLocationEmptyCountry);
+    jQuery('#{$name}_Postcode').keyup({$name}PostCodeLocationChanged).focus({$name}PostCodeLocationEmptyPostcode);
+    jQuery('#{$name}_Country').keyup({$name}PostCodeLocationChanged).focus({$name}PostCodeLocationEmptyCountry);
     // alternatively there exists a jquery Plugin JQUERY-TYPING
 });
     
 function {$name}PostCodeLocationEmptyPostcode(){
-    if(jQuery('#{$name}-Postcode').val().indexOf('{$postcode}') > -1){
-        jQuery('#{$name}-Postcode').val('');
+    if(jQuery('#{$name}_Postcode').val().indexOf('{$postcode}') > -1){
+        jQuery('#{$name}_Postcode').val('');
     }
 }
     
 function {$name}PostCodeLocationEmptyCountry(){
-    if(jQuery('#{$name}-Country').val().indexOf('{$country}') > -1){
-        jQuery('#{$name}-Country').val('');
+    if(jQuery('#{$name}_Country').val().indexOf('{$country}') > -1){
+        jQuery('#{$name}_Country').val('');
     }
 }
 
@@ -126,9 +126,9 @@ function {$name}PostCodeLocationChanged(){
     }
                         
     // trim Postcode value
-    var postcode = jQuery('#{$name}-Postcode').val().replace(/\s+$/,"").replace(/^\s+/,"");
+    var postcode = jQuery('#{$name}_Postcode').val().replace(/\s+$/,"").replace(/^\s+/,"");
     // trim Country value
-    var country = jQuery('#{$name}-Country').val().replace(/\s+$/,"").replace(/^\s+/,"");
+    var country = jQuery('#{$name}_Country').val().replace(/\s+$/,"").replace(/^\s+/,"");
     
     // Postcode or Country at least more than 2 digits and not placeholster is stristr of value
     if(((postcode.length >= 2 && !("{$postcode}".indexOf(postcode) > -1)) || country.length >= 2 && !("{$country}".indexOf(country) > -1)) && !("{$postcode}".indexOf(postcode) > -1 && "{$country}".indexOf(country) > -1)){
@@ -141,13 +141,13 @@ var {$name}PostcodeGeocoder = null;
 // fetch google data and update lat, lng
 function {$name}PostCodeLocationFetch(){
     // clear Lat + Lng
-    jQuery('#{$name}-Latitude').val('');
-    jQuery('#{$name}-Longditude').val('');
+    jQuery('#{$name}_Latitude').val('');
+    jQuery('#{$name}_Longditude').val('');
     
     // trim Postcode value
-    var postcode = jQuery('#{$name}-Postcode').val().replace(/\s+$/,"").replace(/^\s+/,"");
+    var postcode = jQuery('#{$name}_Postcode').val().replace(/\s+$/,"").replace(/^\s+/,"");
     // trim Country value
-    var country = jQuery('#{$name}-Country').val().replace(/\s+$/,"").replace(/^\s+/,"");
+    var country = jQuery('#{$name}_Country').val().replace(/\s+$/,"").replace(/^\s+/,"");
     
     postcode = ("{$postcode}".indexOf(postcode) == -1) ? postcode : '';
     country = ("{$country}".indexOf(country) == -1) ? country : '';
@@ -166,15 +166,15 @@ function {$name}PostcodeGeocoderCallback(Response, Status){
     // Status OK
     if(Status == 'OK'){
         if(Response.length == 1){
-            jQuery('#{$name}-Latitude').val(Response[0]['geometry']['location'].lat());
-            jQuery('#{$name}-Longditude').val(Response[0]['geometry']['location'].lng());
-            //alert($('#{$name}-Latitude').val()+','+$('#{$name}-Longditude').val());
+            jQuery('#{$name}_Latitude').val(Response[0]['geometry']['location'].lat());
+            jQuery('#{$name}_Longditude').val(Response[0]['geometry']['location'].lng());
+            //alert($('#{$name}_Latitude').val()+','+$('#{$name}_Longditude').val());
         }else{
             // check if there is only one locality, while all others are places of interest
             var id = PostcodeIsSingleLocality(Response);
             if(id != null){
-                jQuery('#{$name}-Latitude').val(Response[id]['geometry']['location'].lat());
-                jQuery('#{$name}-Longditude').val(Response[id]['geometry']['location'].lng());
+                jQuery('#{$name}_Latitude').val(Response[id]['geometry']['location'].lat());
+                jQuery('#{$name}_Longditude').val(Response[id]['geometry']['location'].lng());
             }
             
             // else result not unique
