@@ -213,12 +213,12 @@ CSS;
 		
 		// postcode and country are still placeholders
                 
-		if(stristr(trim(_t('GeoLocationField.ADDRESSPLACEHOLDER', 'Address')), trim($addressField->Value()))){
+		if(trim($addressField->Value()) == ''){
 			$validator->validationError($name, _t('GeoLocationField.VALIDATION', 'Please enter an accurate address!'), "validation");
 			return false;
 		}
                 
-		if(trim($addressField->Value()) == ''){
+		if(stristr(trim(_t('GeoLocationField.ADDRESSPLACEHOLDER', 'Address')), trim($addressField->Value()))){
 			$validator->validationError($name, _t('GeoLocationField.VALIDATION', 'Please enter an accurate address!'), "validation");
 			return false;
 		}

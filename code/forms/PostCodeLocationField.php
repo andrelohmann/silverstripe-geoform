@@ -357,12 +357,12 @@ JS;
 		
 		// postcode and country are still placeholders
                 
-		if(stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value())) && stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))){
+		if(trim($postcodeField->Value()) == '' || trim($countryField->Value()) == ''){
 			$validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
 			return false;
 		}
                 
-		if(trim($postcodeField->Value()) == '' || trim($countryField->Value()) == ''){
+		if(stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value())) && stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))){
 			$validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
 			return false;
 		}
