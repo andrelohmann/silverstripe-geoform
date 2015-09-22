@@ -73,6 +73,10 @@ class GeoLocationField extends FormField {
 		$js = <<<JS
 (function($){
     $(function(){
+		$("#{$name}_Address").change(function(){
+			$("#{$name}_Latitude").val('');
+            $("#{$name}_Longditude").val('');
+		});
         $("#{$name}_Address").geocomplete().bind("geocode:result", function(event, result){
             $("#{$name}_Latitude").val(result.geometry.location.lat());
             $("#{$name}_Longditude").val(result.geometry.location.lng());
