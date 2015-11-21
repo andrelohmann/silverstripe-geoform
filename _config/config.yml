@@ -1,5 +1,0 @@
-name: geoform
----
-DataObject:
-  extensions:
-    - AddGeodistanceFunction
