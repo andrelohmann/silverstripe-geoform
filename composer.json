@@ -13,7 +13,7 @@
 	"require": {
 		"php": ">=5.3.2",
 		"composer/installers": "*",
-		"andrelohmann-silverstripe/extendedobjects": "2.*"
+		"andrelohmann-silverstripe/geolocation": "1.*"
 	},
 	"minimum-stability": "stable"
 }
