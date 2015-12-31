@@ -5,98 +5,110 @@
  * @package geoform
  * @subpackage fields-formattedinput
  */
-class PostCodeLocationField extends FormField {
-	
-	/**
-	 * @var string $_locale
-	 */
-	protected $_locale;
+class PostCodeLocationField extends FormField
+{
+    
+    /**
+     * @var string $_locale
+     */
+    protected $_locale;
         
-	protected $wrapFieldgroup = true;
-	
-	/**
-	 * @var FormField
-	 */
-	protected $fieldPostcode = null;
-	
-	/**
-	 * @var FormField
-	 */
-	protected $fieldCountry = null;
-	
-	/**
-	 * @var FormField
-	 */
-	protected $fieldLatitude = null;
-	
-	/**
-	 * @var FormField
-	 */
-	protected $fieldLongditude = null;
-	
-	public function __construct($name, $title = null, $value = "", $form = null) {
+    protected $wrapFieldgroup = true;
+    
+    /**
+     * @var FormField
+     */
+    protected $fieldPostcode = null;
+    
+    /**
+     * @var FormField
+     */
+    protected $fieldCountry = null;
+    
+    /**
+     * @var FormField
+     */
+    protected $fieldLatitude = null;
+    
+    /**
+     * @var FormField
+     */
+    protected $fieldLongditude = null;
+    
+    public function __construct($name, $title = null, $value = "", $form = null)
+    {
             
-		// naming with underscores to prevent values from actually being saved somewhere
-		$this->fieldLatitude = new HiddenField("{$name}[Latitude]", null);
-		$this->fieldLongditude = new HiddenField("{$name}[Longditude]", null);
-		$this->fieldPostcode = $this->FieldPostcode($name);
-		$this->fieldCountry = $this->FieldCountry($name);
-		
-		parent::__construct($name, $title, null, $form);
-		$this->setValue($value);
-	}
-
-	/**
-	 * Override addExtraClass
-	 * 
-	 * @param string $class
-	 */
-	public function addExtraClass($class) {
-		$this->fieldPostcode->addExtraClass($class);
-		$this->fieldCountry->addExtraClass($class);
-                
-		return $this;
-	}
-
-	/**
-	 * Override removeExtraClass
-	 * 
-	 * @param string $class
-	 */
-	public function removeExtraClass($class) {
-		$this->fieldPostcode->removeExtraClass($class);
-		$this->fieldCountry->removeExtraClass($class);
-		
-		return $this;
-	}
+        // naming with underscores to prevent values from actually being saved somewhere
+        $this->fieldLatitude = new HiddenField("{$name}[Latitude]", null);
+        $this->fieldLongditude = new HiddenField("{$name}[Longditude]", null);
+        $this->fieldPostcode = $this->FieldPostcode($name);
+        $this->fieldCountry = $this->FieldCountry($name);
         
-	public function setPostcodeAttribute($name, $value){
-		$this->fieldPostcode->setAttribute($name, $value);
-		return $this;
-	}
+        parent::__construct($name, $title, null, $form);
+        $this->setValue($value);
+    }
 
-	public function setCountryAttribute($name, $value){
-		$this->fieldCountry->setAttribute($name, $value);
-		return $this;
-	}
+    /**
+     * Override addExtraClass
+     * 
+     * @param string $class
+     */
+    public function addExtraClass($class)
+    {
+        $this->fieldPostcode->addExtraClass($class);
+        $this->fieldCountry->addExtraClass($class);
+                
+        return $this;
+    }
 
-	public function setWrapFieldgroup($bool = true){
-		$this->wrapFieldgroup = $bool;
-		return $this;
-	}
-	
-	public function Field($properties = array()) {
-		Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
+    /**
+     * Override removeExtraClass
+     * 
+     * @param string $class
+     */
+    public function removeExtraClass($class)
+    {
+        $this->fieldPostcode->removeExtraClass($class);
+        $this->fieldCountry->removeExtraClass($class);
+        
+        return $this;
+    }
+        
+    public function setPostcodeAttribute($name, $value)
+    {
+        $this->fieldPostcode->setAttribute($name, $value);
+        return $this;
+    }
 
-		if(GoogleMaps::getApiKey()) Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
-		else  Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
+    public function setCountryAttribute($name, $value)
+    {
+        $this->fieldCountry->setAttribute($name, $value);
+        return $this;
+    }
 
-		$name = $this->getName();
-		$postcode = _t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode');
-		$country = _t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country');
-		
-		// set caption if required
-		$js = <<<JS
+    public function setWrapFieldgroup($bool = true)
+    {
+        $this->wrapFieldgroup = $bool;
+        return $this;
+    }
+    
+    public function Field($properties = array())
+    {
+        Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
+
+        if (GoogleMaps::getApiKey()) {
+            Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());
+        }  // don't use Sensor on this Field
+        else {
+            Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
+        }
+
+        $name = $this->getName();
+        $postcode = _t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode');
+        $country = _t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country');
+        
+        // set caption if required
+        $js = <<<JS
 jQuery(document).ready(function() {
     // bind PostCodeLocationChanged to Postcode and Country Fields
     jQuery('#{$name}_Postcode').keyup({$name}PostCodeLocationChanged).focus({$name}PostCodeLocationEmptyPostcode);
@@ -198,210 +210,220 @@ function PostcodeIsSingleLocality(Response){
     return (counter == 1) ? locality : null;
 }
 JS;
-		Requirements::customScript($js, 'PostCodeLocationField_Js_'.$this->ID());
+        Requirements::customScript($js, 'PostCodeLocationField_Js_'.$this->ID());
                 
-		if($this->wrapFieldgroup){
-			$field = "<div class=\"fieldgroup\">" .
-					 $this->fieldLatitude->Field() . //SmallFieldHolder() .
-					 $this->fieldLongditude->Field() . //SmallFieldHolder() .
-					 "<div class=\"fieldgroup-field\">" . 
-					 $this->fieldPostcode->Field() . " " . $this->fieldCountry->Field() .
-					 "</div>" .
-					 "</div>";
-		}else{
-			$field = $this->fieldLatitude->Field() . //SmallFieldHolder() .
-					 $this->fieldLongditude->Field() . //SmallFieldHolder() .
-					 $this->fieldPostcode->Field() .
-					 " " .
-					 $this->fieldCountry->Field();
-		}
+        if ($this->wrapFieldgroup) {
+            $field = "<div class=\"fieldgroup\">" .
+                     $this->fieldLatitude->Field() . //SmallFieldHolder() .
+                     $this->fieldLongditude->Field() . //SmallFieldHolder() .
+                     "<div class=\"fieldgroup-field\">" .
+                     $this->fieldPostcode->Field() . " " . $this->fieldCountry->Field() .
+                     "</div>" .
+                     "</div>";
+        } else {
+            $field = $this->fieldLatitude->Field() . //SmallFieldHolder() .
+                     $this->fieldLongditude->Field() . //SmallFieldHolder() .
+                     $this->fieldPostcode->Field() .
+                     " " .
+                     $this->fieldCountry->Field();
+        }
 
-		return $field;
-	}
-	
-	/**
-	 * @param string $name - Name of field
-	 * @return FormField
-	 */
-	protected function FieldPostcode($name) {
-		
-		$field = new TextField(
-			"{$name}[Postcode]",
+        return $field;
+    }
+    
+    /**
+     * @param string $name - Name of field
+     * @return FormField
+     */
+    protected function FieldPostcode($name)
+    {
+        $field = new TextField(
+            "{$name}[Postcode]",
                         null,
-			_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')
-		);
-		
-		return $field;
-	}
-	
-	/**
-	 * @param string $name - Name of field
-	 * @return FormField
-	 */
-	protected function FieldCountry($name) {
-		
-		$field = new TextField(
-			"{$name}[Country]",
-			null,
-			_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')
-		);
-		
-		return $field;
-	}
-	
-	public function setValue($val) {
-		$this->value = $val;
+            _t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')
+        );
+        
+        return $field;
+    }
+    
+    /**
+     * @param string $name - Name of field
+     * @return FormField
+     */
+    protected function FieldCountry($name)
+    {
+        $field = new TextField(
+            "{$name}[Country]",
+            null,
+            _t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')
+        );
+        
+        return $field;
+    }
+    
+    public function setValue($val)
+    {
+        $this->value = $val;
 
-		if(is_array($val)) {
-			$this->fieldPostcode->setValue($val['Postcode']);
-			$this->fieldCountry->setValue($val['Country']);
-			$this->fieldLatitude->setValue($val['Latitude']);
-			$this->fieldLongditude->setValue($val['Longditude']);
-		} elseif($val instanceof PostCodeLocation) {
-			$this->fieldPostcode->setValue($val->getPostcode());
-			$this->fieldCountry->setValue($val->getCountry());
-			$this->fieldLatitude->setValue($val->getLatitude());
-			$this->fieldLongditude->setValue($val->getLongditude());
-		}
-	}
-	
-	/**
-	 * 30/06/2009 - Enhancement: 
-	 * SaveInto checks if set-methods are available and use them 
-	 * instead of setting the values in the money class directly. saveInto
-	 * initiates a new Money class object to pass through the values to the setter
-	 * method.
-	 *
-	 * (see @link MoneyFieldTest_CustomSetter_Object for more information)
-	 */
-	public function saveInto(DataObjectInterface $dataObject) {
-		$fieldName = $this->name;
-		if($dataObject->hasMethod("set$fieldName")) {
-			$dataObject->$fieldName = DBField::create_field('PostCodeLocation', array(
-				"Postcode" => $this->fieldPostcode->Value(),
-				"Country" => $this->fieldCountry->Value(),
-				"Latitude" => $this->fieldLatitude->Value(),
-				"Longditude" => $this->fieldLongditude->Value()
-			));
-		} else {
-			$dataObject->$fieldName->setPostcode($this->fieldPostcode->Value()); 
-			$dataObject->$fieldName->setCountry($this->fieldCountry->Value()); 
-			$dataObject->$fieldName->setLatitude($this->fieldLatitude->Value());
-			$dataObject->$fieldName->setLongditude($this->fieldLongditude->Value());
-		}
-	}
+        if (is_array($val)) {
+            $this->fieldPostcode->setValue($val['Postcode']);
+            $this->fieldCountry->setValue($val['Country']);
+            $this->fieldLatitude->setValue($val['Latitude']);
+            $this->fieldLongditude->setValue($val['Longditude']);
+        } elseif ($val instanceof PostCodeLocation) {
+            $this->fieldPostcode->setValue($val->getPostcode());
+            $this->fieldCountry->setValue($val->getCountry());
+            $this->fieldLatitude->setValue($val->getLatitude());
+            $this->fieldLongditude->setValue($val->getLongditude());
+        }
+    }
+    
+    /**
+     * 30/06/2009 - Enhancement: 
+     * SaveInto checks if set-methods are available and use them 
+     * instead of setting the values in the money class directly. saveInto
+     * initiates a new Money class object to pass through the values to the setter
+     * method.
+     *
+     * (see @link MoneyFieldTest_CustomSetter_Object for more information)
+     */
+    public function saveInto(DataObjectInterface $dataObject)
+    {
+        $fieldName = $this->name;
+        if ($dataObject->hasMethod("set$fieldName")) {
+            $dataObject->$fieldName = DBField::create_field('PostCodeLocation', array(
+                "Postcode" => $this->fieldPostcode->Value(),
+                "Country" => $this->fieldCountry->Value(),
+                "Latitude" => $this->fieldLatitude->Value(),
+                "Longditude" => $this->fieldLongditude->Value()
+            ));
+        } else {
+            $dataObject->$fieldName->setPostcode($this->fieldPostcode->Value());
+            $dataObject->$fieldName->setCountry($this->fieldCountry->Value());
+            $dataObject->$fieldName->setLatitude($this->fieldLatitude->Value());
+            $dataObject->$fieldName->setLongditude($this->fieldLongditude->Value());
+        }
+    }
 
-	/**
-	 * Returns a readonly version of this field.
-	 */
-	public function performReadonlyTransformation() {
-		$clone = clone $this;
-		$clone->setReadonly(true);
-		return $clone;
-	}
-	
-	/**
-	 * @todo Implement removal of readonly state with $bool=false
-	 * @todo Set readonly state whenever field is recreated, e.g. in setAllowedCurrencies()
-	 */
-	public function setReadonly($bool) {
-		parent::setReadonly($bool);
-		
-		$this->fieldPostcode->setReadonly($bool);
-		$this->fieldCountry->setReadonly($bool);
-		$this->fieldLatitude->setReadonly($bool);
-		$this->fieldLongditude->setReadonly($bool);
-	}
+    /**
+     * Returns a readonly version of this field.
+     */
+    public function performReadonlyTransformation()
+    {
+        $clone = clone $this;
+        $clone->setReadonly(true);
+        return $clone;
+    }
+    
+    /**
+     * @todo Implement removal of readonly state with $bool=false
+     * @todo Set readonly state whenever field is recreated, e.g. in setAllowedCurrencies()
+     */
+    public function setReadonly($bool)
+    {
+        parent::setReadonly($bool);
+        
+        $this->fieldPostcode->setReadonly($bool);
+        $this->fieldCountry->setReadonly($bool);
+        $this->fieldLatitude->setReadonly($bool);
+        $this->fieldLongditude->setReadonly($bool);
+    }
 
-	public function setDisabled($bool) {
-		parent::setDisabled($bool);
-		
-		$this->fieldPostcode->setDisabled($bool);
-		$this->fieldCountry->setDisabled($bool);
-		$this->fieldLatitude->setDisabled($bool);
-		$this->fieldLongditude->setDisabled($bool);
+    public function setDisabled($bool)
+    {
+        parent::setDisabled($bool);
+        
+        $this->fieldPostcode->setDisabled($bool);
+        $this->fieldCountry->setDisabled($bool);
+        $this->fieldLatitude->setDisabled($bool);
+        $this->fieldLongditude->setDisabled($bool);
 
-		return $this;
-	}
-	
-	public function setLocale($locale) {
-		$this->_locale = $locale;
-		return $this;
-	}
-	
-	public function getLocale() {
-		return $this->_locale;
-	}
-	
-	/**
-	 * Validates PostCodeLocation against GoogleMaps Serverside
-	 * 
-	 * @return String
-	 */
-	public function validate($validator){
-		$name = $this->name;
-		
-		$postcodeField = $this->fieldPostcode;
-		$countryField = $this->fieldCountry;
-		$latitudeField = $this->fieldLatitude;
-		$longditudeField = $this->fieldLongditude;
-		$postcodeField->setValue($_POST[$name]['Postcode']);
-		$countryField->setValue($_POST[$name]['Country']);
-		$latitudeField->setValue($_POST[$name]['Latitude']);
-		$longditudeField->setValue($_POST[$name]['Longditude']);
+        return $this;
+    }
+    
+    public function setLocale($locale)
+    {
+        $this->_locale = $locale;
+        return $this;
+    }
+    
+    public function getLocale()
+    {
+        return $this->_locale;
+    }
+    
+    /**
+     * Validates PostCodeLocation against GoogleMaps Serverside
+     * 
+     * @return String
+     */
+    public function validate($validator)
+    {
+        $name = $this->name;
+        
+        $postcodeField = $this->fieldPostcode;
+        $countryField = $this->fieldCountry;
+        $latitudeField = $this->fieldLatitude;
+        $longditudeField = $this->fieldLongditude;
+        $postcodeField->setValue($_POST[$name]['Postcode']);
+        $countryField->setValue($_POST[$name]['Country']);
+        $latitudeField->setValue($_POST[$name]['Latitude']);
+        $longditudeField->setValue($_POST[$name]['Longditude']);
                 
-		// Result was unique
-		if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
-			return true;
-		}
-		
-		// postcode and country are still placeholders
+        // Result was unique
+        if ($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())) {
+            return true;
+        }
+        
+        // postcode and country are still placeholders
+
+        if (trim($postcodeField->Value()) == '' || trim($countryField->Value()) == '') {
+            $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
+            return false;
+        }
                 
-		if(trim($postcodeField->Value()) == '' || trim($countryField->Value()) == ''){
-			$validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
-			return false;
-		}
-                
-		if(stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value())) && stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))){
-			$validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
-			return false;
-		}
+        if (stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value())) && stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))) {
+            $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONJS', 'Please enter an accurate ZIP and City/Country.'), "validation");
+            return false;
+        }
 
-		// fetch result from google (serverside)
-		$myPostcode = (stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value()))) ? '' : trim($postcodeField->Value());
-		$myCountry = (stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))) ? '' : trim($countryField->Value());
+        // fetch result from google (serverside)
+        $myPostcode = (stristr(trim(_t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode')), trim($postcodeField->Value()))) ? '' : trim($postcodeField->Value());
+        $myCountry = (stristr(trim(_t('PostCodeLocationField.CITYCOUNTRYPLACEHOLDER', 'City/Country')), trim($countryField->Value()))) ? '' : trim($countryField->Value());
 
-		// Update to v3 API
-		$googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($myPostcode.', '.$myCountry).'&language='.i18n::get_tinymce_lang();
-		if(GoogleMaps::getApiKey()) $googleUrl.= '&key='.GoogleMaps::getApiKey();
+        // Update to v3 API
+        $googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($myPostcode.', '.$myCountry).'&language='.i18n::get_tinymce_lang();
+        if (GoogleMaps::getApiKey()) {
+            $googleUrl.= '&key='.GoogleMaps::getApiKey();
+        }
 
-		$result = json_decode(file_get_contents($googleUrl), true);
+        $result = json_decode(file_get_contents($googleUrl), true);
 
-		// if result unique
-		if($result['status'] == 'OK' && count($result['results']) == 1){
-			$latitudeField->setValue($result['results'][0]['geometry']['location']['lat']);
-			$longditudeField->setValue($result['results'][0]['geometry']['location']['lng']);
-			return true;
-		}else{
-			$tmpCounter = 0;
-			$tmpLocality = null;
-			for($i=0; $i<count($result['results']); $i++){
-				// check if type is locality political
-				if($result['results'][$i]['types'][0] == 'locality' && $result['results'][$i]['types'][1] == 'political'){
-					$tmpLocality = $i;
-					$tmpCounter++;
-				}
-			}
+        // if result unique
+        if ($result['status'] == 'OK' && count($result['results']) == 1) {
+            $latitudeField->setValue($result['results'][0]['geometry']['location']['lat']);
+            $longditudeField->setValue($result['results'][0]['geometry']['location']['lng']);
+            return true;
+        } else {
+            $tmpCounter = 0;
+            $tmpLocality = null;
+            for ($i=0; $i<count($result['results']); $i++) {
+                // check if type is locality political
+                if ($result['results'][$i]['types'][0] == 'locality' && $result['results'][$i]['types'][1] == 'political') {
+                    $tmpLocality = $i;
+                    $tmpCounter++;
+                }
+            }
 
-			if($tmpCounter == 1){
-				$latitudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lat']);
-				$longditudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lng']);
-				return true;
-			}else{
-				// result not unique
-				$validator->validationError($name, _t('PostCodeLocationField.VALIDATIONUNIQUEJS', 'ZIP and City/Country are not unique, please specify.'), "validation");
-				return false;
-			}
-		}
-	}
+            if ($tmpCounter == 1) {
+                $latitudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lat']);
+                $longditudeField->setValue($result['results'][$tmpLocality]['geometry']['location']['lng']);
+                return true;
+            } else {
+                // result not unique
+                $validator->validationError($name, _t('PostCodeLocationField.VALIDATIONUNIQUEJS', 'ZIP and City/Country are not unique, please specify.'), "validation");
+                return false;
+            }
+        }
+    }
 }
