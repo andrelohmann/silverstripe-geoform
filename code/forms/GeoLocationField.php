@@ -66,8 +66,8 @@ class GeoLocationField extends FormField {
 
 		Requirements::javascript('geoform/javascript/jquery.geocomplete.js');
 		
-		if(GoogleMaps::getApiKey()) Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
-		else  Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
+		if(GoogleMaps::getApiKey()) Requirements::javascript('//maps.googleapis.com/maps/api/js?libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
+		else  Requirements::javascript('//maps.googleapis.com/maps/api/js?libraries=places&language='.i18n::get_tinymce_lang());
 
 		$name = $this->name;
 		$js = <<<JS
