@@ -66,14 +66,14 @@ class BackendGeoLocationField extends FormField {
 	 * @return string
 	 */
 	function Field($properties = array()) {
-		
-		if(GoogleMaps::getApiKey()){
-			Requirements::javascript('//maps.googleapis.com/maps/api/js?js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());
-		}else{
-			Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
-		}
 
 		Requirements::javascript('geoform/javascript/backendgeolocationfield.js');
+		
+		if(GoogleMaps::getApiKey()){
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());
+		}else{
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&libraries=places&language='.i18n::get_tinymce_lang());
+		}
 
 		Requirements::css('geoform/css/backendgeolocationfield.css');
 		

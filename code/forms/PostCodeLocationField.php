@@ -88,8 +88,8 @@ class PostCodeLocationField extends FormField {
 	public function Field($properties = array()) {
 		Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
 
-		if(GoogleMaps::getApiKey()) Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
-		else  Requirements::javascript('//maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language='.i18n::get_tinymce_lang());
+		if(GoogleMaps::getApiKey()) Requirements::javascript('//maps.googleapis.com/maps/api/js?libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
+		else  Requirements::javascript('//maps.googleapis.com/maps/api/js?libraries=places&language='.i18n::get_tinymce_lang());
 
 		$name = $this->getName();
 		$postcode = _t('PostCodeLocationField.ZIPCODEPLACEHOLDER', 'ZIP/Postcode');
