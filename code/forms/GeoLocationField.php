@@ -1,90 +1,88 @@
 <?php
 /**
  * @author Andre Lohmann
- * 
+ *
  * @package geoform
  * @subpackage fields-formattedinput
  */
 class GeoLocationField extends FormField {
-	
+
 	/**
 	 * @var string $_locale
 	 */
 	protected $_locale;
-	
+
 	/**
 	 * @var FormField
 	 */
 	protected $fieldAddress = null;
-	
+
 	/**
 	 * @var FormField
 	 */
 	protected $fieldLatitude = null;
-	
+
 	/**
 	 * @var FormField
 	 */
 	protected $fieldLongditude = null;
-	
+
+	/**
+	 * @var stdClass
+	 */
+	protected $geocompleteOptions = null;
+
 	function __construct($name, $title = null, $value = "", $form = null) {
 		// naming with underscores to prevent values from actually being saved somewhere
 		$this->fieldLatitude = new HiddenField("{$name}[Latitude]", null);
 		$this->fieldLongditude = new HiddenField("{$name}[Longditude]", null);
 		$this->fieldAddress = $this->FieldAddress($name);
-		
+
 		parent::__construct($name, $title, $value, $form);
 	}
 
 	/**
 	 * Override addExtraClass
-	 * 
+	 *
 	 * @param string $class
 	 */
 	public function addExtraClass($class) {
 		$this->fieldAddress->addExtraClass($class);
-                
+
 		return $this;
 	}
 
 	/**
 	 * Override removeExtraClass
-	 * 
+	 *
 	 * @param string $class
 	 */
 	public function removeExtraClass($class) {
 		$this->fieldAddress->removeExtraClass($class);
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * @return string
 	 */
 	function Field($properties = array()) {
 		Requirements::javascript(FRAMEWORK_DIR . '/thirdparty/jquery/jquery.min.js');
 
-		Requirements::javascript('geoform/javascript/jquery.geocomplete.js');
-		
-		if(GoogleMaps::getApiKey()) Requirements::javascript('//maps.googleapis.com/maps/api/js?libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());  // don't use Sensor on this Field
-		else  Requirements::javascript('//maps.googleapis.com/maps/api/js?libraries=places&language='.i18n::get_tinymce_lang());
+		$options = $this->getGeocompleteOptions();
 
-		$name = $this->name;
-		$js = <<<JS
-(function($){
-    $(function(){
-		$("#{$name}_Address").change(function(){
-			$("#{$name}_Latitude").val('');
-            $("#{$name}_Longditude").val('');
-		});
-        $("#{$name}_Address").geocomplete().bind("geocode:result", function(event, result){
-            $("#{$name}_Latitude").val(result.geometry.location.lat());
-            $("#{$name}_Longditude").val(result.geometry.location.lng());
-        });
-    });
-})(jQuery);
-JS;
-		Requirements::customScript($js, 'GeoLocationField_Js_'.$this->ID());
+		Requirements::javascript('geoform/javascript/jquery.geocomplete.js');
+		Requirements::javascriptTemplate('geoform/javascript/geolocationfield.js', [
+			'name' => $this->name,
+			'options' => json_encode($options)
+		]);
+
+		if(GoogleMaps::getApiKey()) {
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?libraries=places&language=' . i18n::get_tinymce_lang() . '&key=' . GoogleMaps::getApiKey());
+			// don't use Sensor on this Field
+		} else {
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?libraries=places&language='.i18n::get_tinymce_lang());
+		}
 
 		$css = <<<CSS
 /* make the location suggest dropdown appear above dialog */
@@ -263,4 +261,21 @@ CSS;
 			}
 		}
 	}
+
+	/**
+	 * @return stdClass
+	 */
+	public function getGeocompleteOptions()
+	{
+		return $this->geocompleteOptions instanceof stdClass ? $this->geocompleteOptions : '';
+	}
+
+	/**
+	 * @param stdClass $geocompleteOptions
+	 */
+	public function setGeocompleteOptions($geocompleteOptions)
+	{
+		$this->geocompleteOptions = $geocompleteOptions;
+	}
+
 }

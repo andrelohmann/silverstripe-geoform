@@ -67,9 +67,6 @@ class FullBackendGeoLocationField extends BackendGeoLocationField
 
 		Requirements::css('geoform/css/backendgeolocationfield.css');
 
-		//Requirements::block('geoform/javascript/backendgeolocationfield.js');
-
-
 		return "<div class=\"fieldgroup\">" .
 		"<div class=\"backend-geo-location-field\">" .
 		$this->fieldLatitude->Field() .
