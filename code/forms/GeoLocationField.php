@@ -78,10 +78,10 @@ class GeoLocationField extends FormField {
 		]);
 
 		if(GoogleMaps::getApiKey()) {
-			Requirements::javascript('//maps.googleapis.com/maps/api/js?libraries=places&language=' . i18n::get_tinymce_lang() . '&key=' . GoogleMaps::getApiKey());
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.26&libraries=places&language=' . i18n::get_tinymce_lang() . '&key=' . GoogleMaps::getApiKey());
 			// don't use Sensor on this Field
 		} else {
-			Requirements::javascript('//maps.googleapis.com/maps/api/js?libraries=places&language='.i18n::get_tinymce_lang());
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.26&libraries=places&language='.i18n::get_tinymce_lang());
 		}
 
 		$css = <<<CSS
@@ -229,7 +229,7 @@ CSS;
 		$myAddress = (stristr(trim(_t('GeoLocationField.ADDRESSPLACEHOLDER', 'Address')), trim($addressField->Value()))) ? '' : trim($addressField->Value());
 
 		// Update to v3 API
-		$googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($myAddress).'&language='.i18n::get_tinymce_lang();
+		$googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?v=3.26&address='.urlencode($myAddress).'&language='.i18n::get_tinymce_lang();
 		if(GoogleMaps::getApiKey()) $googleUrl.= '&key='.GoogleMaps::getApiKey();
 
 		$result = json_decode(file_get_contents($googleUrl), true);
