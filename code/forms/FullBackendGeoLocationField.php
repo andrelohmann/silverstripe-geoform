@@ -60,9 +60,9 @@ class FullBackendGeoLocationField extends BackendGeoLocationField
 		Requirements::javascript('geoform/javascript/fullbackendgeolocationfield.js');
 
 		if (GoogleMaps::getApiKey()) {
-			Requirements::javascript('//maps.googleapis.com/maps/api/js?js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&libraries=places&language=' . i18n::get_tinymce_lang() . '&key=' . GoogleMaps::getApiKey());
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?js?v=3.26&callback=initializeGoogleMaps&signed_in=true&libraries=places&language=' . i18n::get_tinymce_lang() . '&key=' . GoogleMaps::getApiKey());
 		} else {
-			Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&libraries=places&language=' . i18n::get_tinymce_lang());
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.26&callback=initializeGoogleMaps&signed_in=true&libraries=places&language=' . i18n::get_tinymce_lang());
 		}
 
 		Requirements::css('geoform/css/backendgeolocationfield.css');
@@ -186,7 +186,7 @@ class FullBackendGeoLocationField extends BackendGeoLocationField
 	{
 		$response = parent::fillUniqueAddressWithGoogle($validator);
 
-		if (!$response) {
+		if (!$response || !is_array($response) || !is_array($response['results'])) {
 			return false;
 		}
 
