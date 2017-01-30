@@ -91,29 +91,29 @@ class GeoLocationField extends FormField {
 }
 CSS;
 		Requirements::customCSS($css, 'GeoLocationField_Css_'.$this->ID());
-		
-	
+
+
 		return "<div class=\"fieldgroup\">" .
 			$this->fieldLatitude->Field() . //SmallFieldHolder() .
 			$this->fieldLongditude->Field() . //SmallFieldHolder() .
-			"<div class=\"fieldgroupField\">" . $this->fieldAddress->Field() . "</div>" . 
+			"<div class=\"fieldgroupField\">" . $this->fieldAddress->Field() . "</div>" .
 		"</div>";
 	}
-	
+
 	/**
 	 * @param string $name - Name of field
 	 * @return FormField
 	 */
 	protected function FieldAddress($name) {
-		
+
 		$field = new TextField(
-			"{$name}[Address]", 
+			"{$name}[Address]",
 			_t('GeoLocationFiels.ADDRESSPLACEHOLDER', 'Address')
 		);
-		
+
 		return $field;
 	}
-	
+
 	function setValue($val) {
 		$this->value = $val;
 
@@ -127,10 +127,10 @@ CSS;
 			$this->fieldLongditude->setValue($val->getLongditude());
 		}
 	}
-	
+
 	/**
-	 * 30/06/2009 - Enhancement: 
-	 * SaveInto checks if set-methods are available and use them 
+	 * 30/06/2009 - Enhancement:
+	 * SaveInto checks if set-methods are available and use them
 	 * instead of setting the values in the money class directly. saveInto
 	 * initiates a new Money class object to pass through the values to the setter
 	 * method.
@@ -146,7 +146,7 @@ CSS;
 				"Longditude" => $this->fieldLongditude->Value()
 			));
 		} else {
-			$dataObject->$fieldName->setAddress($this->fieldAddress->Value()); 
+			$dataObject->$fieldName->setAddress($this->fieldAddress->Value());
 			$dataObject->$fieldName->setLatitude($this->fieldLatitude->Value());
 			$dataObject->$fieldName->setLongditude($this->fieldLongditude->Value());
 		}
@@ -160,14 +160,14 @@ CSS;
 		$clone->setReadonly(true);
 		return $clone;
 	}
-	
+
 	/**
 	 * @todo Implement removal of readonly state with $bool=false
 	 * @todo Set readonly state whenever field is recreated, e.g. in setAllowedCurrencies()
 	 */
 	function setReadonly($bool) {
 		parent::setReadonly($bool);
-		
+
 		if($bool) {
 			$this->fieldAddress = $this->fieldAddress->performReadonlyTransformation();
 			$this->fieldLatitude = $this->fieldLatitude->performReadonlyTransformation();
@@ -177,49 +177,49 @@ CSS;
 
 	public function setDisabled($bool) {
 		parent::setDisabled($bool);
-		
+
 		$this->fieldAddress->setDisabled($bool);
 		$this->fieldLatitude->setDisabled($bool);
 		$this->fieldLongditude->setDisabled($bool);
 
 		return $this;
 	}
-	
+
 	function setLocale($locale) {
 		$this->_locale = $locale;
 	}
-	
+
 	function getLocale() {
 		return $this->_locale;
 	}
-	
+
 	/**
 	 * Validates PostCodeLocation against GoogleMaps Serverside
-	 * 
+	 *
 	 * @return String
 	 */
 	public function validate($validator){
 		$name = $this->name;
-		
+
 		$addressField = $this->fieldAddress;
 		$latitudeField = $this->fieldLatitude;
 		$longditudeField = $this->fieldLongditude;
 		$addressField->setValue($_POST[$name]['Address']);
 		$latitudeField->setValue($_POST[$name]['Latitude']);
 		$longditudeField->setValue($_POST[$name]['Longditude']);
-                
+
 		// Result was unique
 		if($latitudeField->Value() != '' && is_numeric($latitudeField->Value()) && $longditudeField->Value() != '' && is_numeric($longditudeField->Value())){
 			return true;
 		}
-		
+
 		// postcode and country are still placeholders
-                
+
 		if(trim($addressField->Value()) == ''){
 			$validator->validationError($name, _t('GeoLocationField.VALIDATION', 'Please enter an accurate address!'), "validation");
 			return false;
 		}
-                
+
 		if(stristr(trim(_t('GeoLocationField.ADDRESSPLACEHOLDER', 'Address')), trim($addressField->Value()))){
 			$validator->validationError($name, _t('GeoLocationField.VALIDATION', 'Please enter an accurate address!'), "validation");
 			return false;

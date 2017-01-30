@@ -1,32 +1,32 @@
 <?php
 /**
  * @author Andre Lohmann
- * 
+ *
  * @package geoform
  * @subpackage fields-formattedinput
  */
 class BackendGeoLocationField extends FormField {
-	
+
 	/**
 	 * @var string $_locale
 	 */
 	protected $_locale;
-	
+
 	/**
 	 * @var FormField
 	 */
 	protected $fieldAddress = null;
-	
+
 	/**
 	 * @var FormField
 	 */
 	protected $fieldLatitude = null;
-	
+
 	/**
 	 * @var FormField
 	 */
 	protected $fieldLongditude = null;
-	
+
 	function __construct($name, $title = null, $value = "", $form = null) {
 		// naming with underscores to prevent values from actually being saved somewhere
 		$this->fieldLatitude = new HiddenField("{$name}[Latitude]", null);
@@ -36,71 +36,71 @@ class BackendGeoLocationField extends FormField {
 		$this->fieldLatitude->addExtraClass('backend-geo-location-latitude-field');
 		$this->fieldLongditude->addExtraClass('backend-geo-location-longditude-field');
 		$this->fieldAddress->addExtraClass('backend-geo-location-address-field');
-                
+
 		parent::__construct($name, $title, $value, $form);
 	}
 
 	/**
 	 * Override addExtraClass
-	 * 
+	 *
 	 * @param string $class
 	 */
 	public function addExtraClass($class) {
 		$this->fieldAddress->addExtraClass($class);
-                
+
 		return $this;
 	}
 
 	/**
 	 * Override removeExtraClass
-	 * 
+	 *
 	 * @param string $class
 	 */
 	public function removeExtraClass($class) {
 		$this->fieldAddress->removeExtraClass($class);
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * @return string
 	 */
 	function Field($properties = array()) {
 
 		Requirements::javascript('geoform/javascript/backendgeolocationfield.js');
-		
+
 		if(GoogleMaps::getApiKey()){
-			Requirements::javascript('//maps.googleapis.com/maps/api/js?js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?js?v=3.26&callback=initializeGoogleMaps&signed_in=true&libraries=places&language='.i18n::get_tinymce_lang().'&key='.GoogleMaps::getApiKey());
 		}else{
-			Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.exp&callback=initializeGoogleMaps&signed_in=true&libraries=places&language='.i18n::get_tinymce_lang());
+			Requirements::javascript('//maps.googleapis.com/maps/api/js?v=3.26&callback=initializeGoogleMaps&signed_in=true&libraries=places&language='.i18n::get_tinymce_lang());
 		}
 
 		Requirements::css('geoform/css/backendgeolocationfield.css');
-		
-	
+
+
 		return "<div class=\"fieldgroup\">" .
 			"<div class=\"backend-geo-location-field\">" .
 			$this->fieldLatitude->Field() . //SmallFieldHolder() .
 			$this->fieldLongditude->Field() . //SmallFieldHolder() .
-			"<div class=\"fieldgroupField\">" . $this->fieldAddress->Field() . "</div>" . 
+			"<div class=\"fieldgroupField\">" . $this->fieldAddress->Field() . "</div>" .
 			"</div>" .
 		"</div>";
 	}
-	
+
 	/**
 	 * @param string $name - Name of field
 	 * @return FormField
 	 */
 	protected function FieldAddress($name) {
-		
+
 		$field = new TextField(
-			"{$name}[Address]", 
+			"{$name}[Address]",
 			_t('GeoLocationFiels.ADDRESSPLACEHOLDER', 'Address')
 		);
-		
+
 		return $field;
 	}
-	
+
 	function setValue($val) {
 		$this->value = $val;
 
@@ -114,10 +114,10 @@ class BackendGeoLocationField extends FormField {
 			$this->fieldLongditude->setValue($val->getLongditude());
 		}
 	}
-	
+
 	/**
-	 * 30/06/2009 - Enhancement: 
-	 * SaveInto checks if set-methods are available and use them 
+	 * 30/06/2009 - Enhancement:
+	 * SaveInto checks if set-methods are available and use them
 	 * instead of setting the values in the money class directly. saveInto
 	 * initiates a new Money class object to pass through the values to the setter
 	 * method.
@@ -133,7 +133,7 @@ class BackendGeoLocationField extends FormField {
 				"Longditude" => $this->fieldLongditude->Value()
 			));
 		} else {
-			$dataObject->$fieldName->setAddress($this->fieldAddress->Value()); 
+			$dataObject->$fieldName->setAddress($this->fieldAddress->Value());
 			$dataObject->$fieldName->setLatitude($this->fieldLatitude->Value());
 			$dataObject->$fieldName->setLongditude($this->fieldLongditude->Value());
 		}
@@ -147,14 +147,14 @@ class BackendGeoLocationField extends FormField {
 		$clone->setReadonly(true);
 		return $clone;
 	}
-	
+
 	/**
 	 * @todo Implement removal of readonly state with $bool=false
 	 * @todo Set readonly state whenever field is recreated, e.g. in setAllowedCurrencies()
 	 */
 	function setReadonly($bool) {
 		parent::setReadonly($bool);
-		
+
 		if($bool) {
 			$this->fieldAddress = $this->fieldAddress->performReadonlyTransformation();
 			$this->fieldLatitude = $this->fieldLatitude->performReadonlyTransformation();
@@ -164,22 +164,22 @@ class BackendGeoLocationField extends FormField {
 
 	public function setDisabled($bool) {
 		parent::setDisabled($bool);
-		
+
 		$this->fieldAddress->setDisabled($bool);
 		$this->fieldLatitude->setDisabled($bool);
 		$this->fieldLongditude->setDisabled($bool);
 
 		return $this;
 	}
-	
+
 	function setLocale($locale) {
 		$this->_locale = $locale;
 	}
-	
+
 	function getLocale() {
 		return $this->_locale;
 	}
-	
+
 	/**
 	 * Validates PostCodeLocation against GoogleMaps Serverside
 	 *
@@ -235,6 +235,10 @@ class BackendGeoLocationField extends FormField {
 	protected function fillUniqueAddressWithGoogle($validator)
 	{
 		$response = $this->getAddressFromGoogle($this->fieldAddress->Value());
+
+		if (!$response || !is_array($response) || !is_array($response['results'])) {
+			return $response;
+		}
 
 		// one result -> use it
 		if (count($response['results']) === 1) {
@@ -301,11 +305,11 @@ class BackendGeoLocationField extends FormField {
 
 		return $result;
 	}
-	
+
 	function setRequireJquery(boolean $require) {
 		$this->_requireJquery = $require;
 	}
-	
+
 	function getRequireJquery() {
 		return $this->_requireJquery;
 	}
