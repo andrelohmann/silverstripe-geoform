@@ -57,6 +57,7 @@
 
 			var no = '';
 			var premise = '';
+			var cityVal = '';
 
 			$(place.address_components).each(function () {
 				if (this.types[0] === 'country') {
@@ -64,7 +65,9 @@
 				} else if (this.types[0] === 'administrative_area_level_1') {
 					region.val(this.long_name);
 				} else if (this.types[0] === 'locality') {
-					city.val(this.long_name);
+					cityVal = this.long_name;
+				} else if (this.types[0] === 'sublocality_level_1') {
+					cityVal = this.long_name;
 				} else if (this.types[0] === 'route') {
 					street.val(this.long_name);
 				} else if (this.types[0] === 'postal_code') {
@@ -83,6 +86,10 @@
 				value = value.replace('/.*\/$/', '');
 
 				street.val(street.val() + ' ' + value);
+			}
+
+			if (cityVal !== '') {
+				city.val(cityVal);
 			}
 		});
 	}
